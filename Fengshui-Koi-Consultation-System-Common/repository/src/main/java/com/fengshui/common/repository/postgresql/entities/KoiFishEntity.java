@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "koi_fish")
-public class KoiFish {
+public class KoiFishEntity {
     @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "koi_fish_id")
@@ -29,4 +29,7 @@ public class KoiFish {
 
     @Column(name = "koi_fish_age")
     private double koiFishAge;
+
+    @Column(name = "koi_fish_picture")
+    private String koiFishPicture;
 }

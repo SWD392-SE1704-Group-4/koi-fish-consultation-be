@@ -28,7 +28,7 @@
     </properties>
 
     <modules>
-        <module>admin-business</module>
+        <module>core-business</module>
         <module>fengshui-consultation</module>
         <module>../Fengshui-Koi-Consultation-System-Common</module>
     </modules>

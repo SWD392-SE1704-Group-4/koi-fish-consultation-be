@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Fengshui-Koi-Consultation-System-Api/core-business" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Fengshui-Koi-Consultation-System-Common/shared" vcs="Git" />
+  </component>
+</project>

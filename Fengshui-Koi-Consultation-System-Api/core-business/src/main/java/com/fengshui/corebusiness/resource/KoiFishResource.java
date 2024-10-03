@@ -5,14 +5,14 @@ import com.fengshui.common.services.KoiFishService;
 import com.fengshui.common.services.impl.KoiFishServiceImpl;
 import com.fengshui.common.shared.Request.KoiFish.CreateKoiFishRequestModel;
 import com.fengshui.common.shared.Request.KoiFish.GetKoiFishRequestModel;
+import com.fengshui.common.shared.Response.KoiFish.CreateKoiFishResponseModel;
+import com.fengshui.common.shared.Response.KoiFish.GetKoiFishResponseModel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,14 +25,14 @@ public class KoiFishResource {
     private KoiFishService koiFishService;
 
 
-    @PostMapping(path = "/create", consumes = {"application/json"})
-    public ResponseEntity<Object> createKoiFish(@RequestBody CreateKoiFishRequestModel requestModel) throws Exception {
-        return ResponseEntity.ok(this.koiFishService.createKoiFish(requestModel));
+    @PostMapping(path = "/create", consumes = {"multipart/form-data"})
+    public ResponseEntity<CreateKoiFishResponseModel> createKoiFish(@ModelAttribute CreateKoiFishRequestModel requestModel) throws Exception {
+        return this.koiFishService.createKoiFish(requestModel);
     }
 
     @PostMapping(value = "/get-list", consumes = {"application/json"})
-    public ResponseEntity<Object> getKoiFish(@RequestBody GetKoiFishRequestModel requestModel) throws Exception {
-        return ResponseEntity.ok(this.koiFishService.getListKoiFish(requestModel));
+    public ResponseEntity<GetKoiFishResponseModel> getKoiFish(@RequestBody GetKoiFishRequestModel requestModel) throws Exception {
+        return this.koiFishService.getListKoiFish(requestModel);
     }
 
 //    @PostMapping(value = "/create", consumes = {"application/json"})

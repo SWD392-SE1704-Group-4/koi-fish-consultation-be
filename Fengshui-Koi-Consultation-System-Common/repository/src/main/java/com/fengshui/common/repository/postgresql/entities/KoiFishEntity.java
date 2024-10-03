@@ -3,6 +3,8 @@ package com.fengshui.common.repository.postgresql.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -30,6 +32,34 @@ public class KoiFishEntity {
     @Column(name = "koi_fish_age")
     private double koiFishAge;
 
-    @Column(name = "koi_fish_picture")
-    private String koiFishPicture;
+    // Store picture URLs or file paths
+    @ElementCollection
+    @CollectionTable(name = "koi_fish_pictures", joinColumns = @JoinColumn(name = "koi_fish_id"))
+    @Column(name = "picture")
+    private List<String> koiFishPictures;
+
+    @ManyToOne
+    @JoinColumn(name = "element_id", referencedColumnName = "element_id")
+    private FengshuiElementEntity fengshuiElement;
+
+    @Column(name = "symbolic_meaning")
+    private String symbolicMeaning;
+
+    @Column(name = "energy_type")
+    private String energyType;
+
+    @Column(name = "favorable_number")
+    private int favorableNumber;
+
+    @Column(name = "favorable_color")
+    private String favorableColor;
+
+    @Column(name = "koi_fish_origin")
+    private String koiFishOrigin;
+
+    @Column(name = "koi_fish_description")
+    private String koiFishDescription;
+
+    @Column(name = "koi_fish_price")
+    private double koiFishPrice;
 }

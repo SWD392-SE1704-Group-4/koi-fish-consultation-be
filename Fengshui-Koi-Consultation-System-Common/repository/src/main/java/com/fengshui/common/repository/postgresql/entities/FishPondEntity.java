@@ -68,11 +68,18 @@ public class FishPondEntity {
     @Column(name = "pond_picture")
     private List<String> pondPictures;
 
+    @ManyToOne
+    @JoinColumn(name = "element_id", referencedColumnName = "element_id")
+    private FengshuiElementEntity fengshuiElement;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 
     // Automatically set the createdAt and updatedAt values
     @PrePersist

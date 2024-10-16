@@ -2,6 +2,7 @@ package com.fengshui.common.repository.postgresql.mapper;
 
 import com.fengshui.common.repository.postgresql.dto.KoiFishDTO;
 import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
+import org.springframework.beans.factory.annotation.Value;
 
 public class KoiFishMapper {
 

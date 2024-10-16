@@ -62,4 +62,8 @@ public class KoiFishEntity {
 
     @Column(name = "koi_fish_price")
     private double koiFishPrice;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
+
 }

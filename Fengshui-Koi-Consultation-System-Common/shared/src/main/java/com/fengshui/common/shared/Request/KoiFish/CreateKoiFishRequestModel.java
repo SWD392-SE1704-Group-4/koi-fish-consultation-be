@@ -15,8 +15,8 @@ public class CreateKoiFishRequestModel implements Serializable {
     private String koiFishColor;
     private double koiFishSize;
     private double koiFishAge;
-    private MultipartFile[] koiFishPicture;
-    private UUID fengShuiElementId;
+    private MultipartFile[] koiFishPictures;
+    private UUID fengshuiElement;
     private String symbolicMeaning;
     private String energyType;
     private int favorableNumber;
@@ -24,4 +24,5 @@ public class CreateKoiFishRequestModel implements Serializable {
     private String koiFishOrigin;
     private String koiFishDescription;
     private double koiFishPrice;
+    private boolean deleted;
 }

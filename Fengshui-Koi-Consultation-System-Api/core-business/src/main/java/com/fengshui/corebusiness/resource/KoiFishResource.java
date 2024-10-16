@@ -4,9 +4,13 @@ import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
 import com.fengshui.common.services.KoiFishService;
 import com.fengshui.common.services.impl.KoiFishServiceImpl;
 import com.fengshui.common.shared.Request.KoiFish.CreateKoiFishRequestModel;
+import com.fengshui.common.shared.Request.KoiFish.DeleteKoiFishRequestModel;
 import com.fengshui.common.shared.Request.KoiFish.GetKoiFishRequestModel;
+import com.fengshui.common.shared.Request.KoiFish.UpdateKoiFishRequestModel;
 import com.fengshui.common.shared.Response.KoiFish.CreateKoiFishResponseModel;
+import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
 import com.fengshui.common.shared.Response.KoiFish.GetKoiFishResponseModel;
+import com.fengshui.common.shared.Response.KoiFish.UpdateKoiFishResponseModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -35,13 +39,13 @@ public class KoiFishResource {
         return this.koiFishService.getListKoiFish(requestModel);
     }
 
-//    @PostMapping(value = "/create", consumes = {"application/json"})
-//    public ResponseEntity<Object> updateKoiFish(UpdateKoiFishRequest requestModel) throws Exception {
-//        return null;
-//    }
-//
-//    @PostMapping(value = "/create", consumes = {"application/json"})
-//    public ResponseEntity<Object> deleteKoiFish(DeleteKoiFishRequest requestModel) throws Exception {
-//        return null;
-//    }
+    @PostMapping(value = "/update", consumes = {"multipart/form-data"})
+    public ResponseEntity<UpdateKoiFishResponseModel> updateKoiFish(@ModelAttribute UpdateKoiFishRequestModel requestModel) throws Exception {
+        return this.koiFishService.updateKoiFish(requestModel);
+    }
+
+    @PostMapping(value = "/delete", consumes = {"application/json"})
+    public ResponseEntity<DeleteKoiFishResponseModel> deleteKoiFish(@RequestBody DeleteKoiFishRequestModel requestModel) throws Exception {
+        return this.koiFishService.deleteKoiFish(requestModel);
+    }
 }

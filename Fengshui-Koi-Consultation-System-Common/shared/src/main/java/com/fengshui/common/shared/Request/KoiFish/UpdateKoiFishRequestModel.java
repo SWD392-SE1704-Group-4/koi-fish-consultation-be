@@ -1,23 +1,25 @@
-package com.fengshui.common.repository.postgresql.dto;
+package com.fengshui.common.shared.Request.KoiFish;
 
-import lombok.Builder;
+import com.fengshui.common.repository.postgresql.dto.KoiFishDTO;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Getter
 @Setter
-@Builder
-public class KoiFishDTO {
-    private UUID id;
+public class UpdateKoiFishRequestModel implements Serializable {
+    private UUID koiFishId;
     private String koiFishName;
     private String koiFishColor;
     private double koiFishSize;
     private double koiFishAge;
-    private List<String> koiFishPictures;
-    private FengshuiElementDTO fengshuiElement;
+    private ArrayList<String> koiFishPictures;
+    private MultipartFile[] newKoiFishPictures;
+    private UUID fengshuiElement;
     private String symbolicMeaning;
     private String energyType;
     private int favorableNumber;
@@ -25,6 +27,4 @@ public class KoiFishDTO {
     private String koiFishOrigin;
     private String koiFishDescription;
     private double koiFishPrice;
-
 }
-

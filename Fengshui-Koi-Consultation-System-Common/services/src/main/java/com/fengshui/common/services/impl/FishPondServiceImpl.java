@@ -6,16 +6,20 @@ import com.fengshui.common.repository.postgresql.IFishPondRepository;
 import com.fengshui.common.repository.postgresql.dto.FishPondDTO;
 import com.fengshui.common.repository.postgresql.entities.FengshuiElementEntity;
 import com.fengshui.common.repository.postgresql.entities.FishPondEntity;
+import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
 import com.fengshui.common.repository.postgresql.mapper.FishPondMapper;
 import com.fengshui.common.repository.postgresql.mapper.KoiFishMapper;
 import com.fengshui.common.services.FishPondService;
 import com.fengshui.common.shared.Constants.ImageType;
 import com.fengshui.common.shared.Request.FishPond.CreateFishPondRequestModel;
+import com.fengshui.common.shared.Request.FishPond.DeleteFishPondRequestModel;
 import com.fengshui.common.shared.Request.FishPond.GetFishPondRequestModel;
 import com.fengshui.common.shared.Request.FishPond.UpdateFishPondRequestModel;
 import com.fengshui.common.shared.Response.FishPond.CreateFishPondResponseModel;
+import com.fengshui.common.shared.Response.FishPond.DeleteFishPondResponseModel;
 import com.fengshui.common.shared.Response.FishPond.GetFishPondResponseModel;
 import com.fengshui.common.shared.Response.FishPond.UpdateFishPondResponseModel;
+import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -188,6 +192,24 @@ public class FishPondServiceImpl implements FishPondService {
 
         } catch (Exception error) {
             response = new UpdateFishPondResponseModel(true, null, error);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    public ResponseEntity<DeleteFishPondResponseModel> deleteFishPond(DeleteFishPondRequestModel requestModel) {
+        DeleteFishPondResponseModel response;
+        try {
+            FishPondEntity existingFishPond = fishPondRepository.findById(requestModel.getFishPondId())
+                    .orElseThrow(() -> new IllegalArgumentException("Fish Pond not found"));
+
+            existingFishPond.setDeleted(true);
+
+            fishPondRepository.save(existingFishPond);
+
+            response = new DeleteFishPondResponseModel(false, null, "Fish Pond deleted successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception error) {
+            response = new DeleteFishPondResponseModel(true, null, error.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

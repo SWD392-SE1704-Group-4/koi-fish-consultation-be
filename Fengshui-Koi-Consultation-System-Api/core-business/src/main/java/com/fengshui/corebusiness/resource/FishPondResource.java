@@ -2,11 +2,13 @@ package com.fengshui.corebusiness.resource;
 
 import com.fengshui.common.services.FishPondService;
 import com.fengshui.common.shared.Request.FishPond.CreateFishPondRequestModel;
+import com.fengshui.common.shared.Request.FishPond.DeleteFishPondRequestModel;
 import com.fengshui.common.shared.Request.FishPond.GetFishPondRequestModel;
 import com.fengshui.common.shared.Request.FishPond.UpdateFishPondRequestModel;
 import com.fengshui.common.shared.Request.KoiFish.DeleteKoiFishRequestModel;
 import com.fengshui.common.shared.Request.KoiFish.UpdateKoiFishRequestModel;
 import com.fengshui.common.shared.Response.FishPond.CreateFishPondResponseModel;
+import com.fengshui.common.shared.Response.FishPond.DeleteFishPondResponseModel;
 import com.fengshui.common.shared.Response.FishPond.GetFishPondResponseModel;
 import com.fengshui.common.shared.Response.FishPond.UpdateFishPondResponseModel;
 import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
@@ -40,8 +42,8 @@ public class FishPondResource {
         return this.fishPondService.updateFishPond(requestModel);
     }
 
-//    @PostMapping(value = "/delete", consumes = {"application/json"})
-//    public ResponseEntity<DeleteKoiFishResponseModel> deleteKoiFish(@RequestBody DeleteKoiFishRequestModel requestModel) throws Exception {
-//        return this.fishPondService.deleteKoiFish(requestModel);
-//    }
+    @PostMapping(value = "/delete", consumes = {"application/json"})
+    public ResponseEntity<DeleteFishPondResponseModel> deleteKoiFish(@RequestBody DeleteFishPondRequestModel requestModel) throws Exception {
+        return this.fishPondService.deleteFishPond(requestModel);
+    }
 }

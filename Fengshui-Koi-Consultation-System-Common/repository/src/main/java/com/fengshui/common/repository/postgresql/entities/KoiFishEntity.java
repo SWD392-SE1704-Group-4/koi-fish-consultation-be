@@ -42,6 +42,9 @@ public class KoiFishEntity {
     @JoinColumn(name = "element_id", referencedColumnName = "element_id")
     private FengshuiElementEntity fengshuiElement;
 
+    @OneToMany(mappedBy = "koiFish")
+    private List<AdvertisementEntity> advertisementList;
+
     @Column(name = "symbolic_meaning")
     private String symbolicMeaning;
 

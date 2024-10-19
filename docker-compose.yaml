@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  postgresdb:
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=${POSTGRESDB_USER}
+      - POSTGRES_PASSWORD=${POSTGRESDB_ROOT_PASSWORD}
+      - POSTGRES_DB=${POSTGRESDB_DATABASE}
+    ports:
+      - "${POSTGRESDB_LOCAL_PORT}:${POSTGRESDB_DOCKER_PORT}"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  app:
+    depends_on:
+      - postgresdb
+    build: ./
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - "${SPRING_LOCAL_PORT}:${SPRING_DOCKER_PORT}"
+      - "5005:5005"
+    environment:
+      JPDA_ADDRESS: 5005
+      JPDA_TRANSPORT: dt_socket
+      SPRING_APPLICATION_JSON: >-
+        {
+          "spring.datasource.url"  : "jdbc:postgresql://postgresdb:${POSTGRESDB_DOCKER_PORT}/${POSTGRESDB_DATABASE}",
+          "spring.datasource.username" : "${POSTGRESDB_USER}",
+          "spring.datasource.password" : "${POSTGRESDB_ROOT_PASSWORD}",
+          "spring.jpa.properties.hibernate.dialect" : "org.hibernate.dialect.PostgreSQLDialect",
+          "spring.jpa.hibernate.ddl-auto" : "update"
+        }
+      # Additional environment variables
+      AWS_S3_ENDPOINT: ${AWS_S3_ENDPOINT}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_BUCKET_NAME: ${AWS_BUCKET_NAME}
+      AWS_POSTER_FOLDER: ${AWS_POSTER_FOLDER}
+      AWS_THUMBNAIL_FOLDER: ${AWS_THUMBNAIL_FOLDER}
+      AWS_CLOUDFRONT_URL: ${AWS_CLOUDFRONT_URL}
+      AWS_COGNITO_USER_POOL_ID: ${AWS_COGNITO_USER_POOL_ID}
+      AWS_COGNITO_CLIENT_ID: ${AWS_COGNITO_CLIENT_ID}
+      AWS_COGNITO_CLIENT_SECRET: ${AWS_COGNITO_CLIENT_SECRET}
+      AWS_REGION: ${AWS_REGION}
+    volumes:
+      - .m2:/root/.m2
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:

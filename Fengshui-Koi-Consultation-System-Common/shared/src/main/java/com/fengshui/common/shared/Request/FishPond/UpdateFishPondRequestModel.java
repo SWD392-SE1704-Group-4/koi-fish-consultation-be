@@ -1,7 +1,7 @@
 package com.fengshui.common.shared.Request.FishPond;
 
-import com.fengshui.common.shared.Response.BaseResponseModel;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
@@ -9,7 +9,8 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CreateFishPondRequestModel implements Serializable {
+public class UpdateFishPondRequestModel implements Serializable {
+    private UUID fishPondId;
     private String pondName;
     private String pondShape;
     private Double pondSize;  // in square meters

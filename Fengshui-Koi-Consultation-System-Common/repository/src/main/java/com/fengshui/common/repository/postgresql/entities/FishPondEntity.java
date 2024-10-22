@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,9 +16,9 @@ import java.time.LocalDateTime;
 @Table(name = "fish_pond")
 public class FishPondEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "pond_id")
-    private Long pondId;
+    private UUID pondId;
 
     @Column(name = "pond_name", nullable = false, length = 100)
     private String pondName;
@@ -60,11 +62,23 @@ public class FishPondEntity {
     @Column(name = "pond_orientation", length = 50)
     private String pondOrientation; // Direction the pond is facing (based on Feng Shui)
 
+    @ElementCollection
+    @CollectionTable(name = "fish_pond_pictures", joinColumns = @JoinColumn(name = "pond_id"))
+    @Column(name = "pond_picture")
+    private List<String> pondPictures;
+
+    @ManyToOne
+    @JoinColumn(name = "element_id", referencedColumnName = "element_id")
+    private FengshuiElementEntity fengshuiElement;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 
     // Automatically set the createdAt and updatedAt values
     @PrePersist

@@ -8,6 +8,7 @@ import com.fengshui.common.aws.Cognito.CognitoUserPool;
 import com.fengshui.common.aws.Cognito.model.CognitoUser;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -15,6 +16,10 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
 public class CognitoUserPoolImpl implements CognitoUserPool {
 
     @Value("${cognitoProperties.userPoolId}")
@@ -121,5 +126,29 @@ public class CognitoUserPoolImpl implements CognitoUserPool {
                 .build();
 
         cognitoClient.resendConfirmationCode(request);
+    }
+    @Override
+    public AdminGetUserResponse getUserById(String username) {
+        AdminGetUserRequest request = AdminGetUserRequest.builder()
+                .userPoolId(userPoolId)
+                .username(username)
+                .build();
+
+        return cognitoClient.adminGetUser(request);
+    }
+
+    @Override
+    public List<String> getUserGroups(String username) {
+        AdminListGroupsForUserRequest request = AdminListGroupsForUserRequest.builder()
+                .userPoolId(userPoolId)
+                .username(username)
+                .build();
+
+        AdminListGroupsForUserResponse response = cognitoClient.adminListGroupsForUser(request);
+
+        // Extract group names from the response
+        return response.groups().stream()
+                .map(GroupType::groupName)
+                .collect(Collectors.toList());
     }
 }

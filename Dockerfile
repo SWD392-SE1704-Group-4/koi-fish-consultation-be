@@ -1,24 +1,25 @@
-# Use an official Maven image to build the app
+# Use Maven for the build stage
 FROM maven:3.8.4-openjdk-17 AS build
 WORKDIR /app
 
-# Copy the pom.xml and project files to the container
-COPY ./pom.xml ./ 
-COPY ./Fengshui-Koi-Consultation-System-Api ./Fengshui-Koi-Consultation-System-Api
+# Copy the main pom.xml and the source code for the Common and Api modules
+COPY ./pom.xml ./
 COPY ./Fengshui-Koi-Consultation-System-Common ./Fengshui-Koi-Consultation-System-Common
+COPY ./Fengshui-Koi-Consultation-System-Api ./Fengshui-Koi-Consultation-System-Api
 
-# Package the application
-RUN mvn clean package -DskipTests
+# Build the Common module first and then the core-business module
+RUN mvn -f ./Fengshui-Koi-Consultation-System-Common/pom.xml clean install
+RUN mvn -f ./Fengshui-Koi-Consultation-System-Api/core-business/pom.xml clean package
 
-# Use an OpenJDK runtime image to run the app
+# Use a lightweight JDK for running the application
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-# Copy the jar file from the build stage
-COPY --from=build /app/Fengshui-Koi-Consultation-System-Api/target/*.jar /app/app.jar
+# Copy the built JAR file from the previous stage
+COPY --from=build /app/Fengshui-Koi-Consultation-System-Api/core-business/target/core-business-0.0.1-SNAPSHOT.jar /app/core-business.jar
 
-# Expose the default Spring Boot port
+# Expose the default port for Spring Boot
 EXPOSE 8080
 
-# Command to run the app
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Run the application
+ENTRYPOINT ["java", "-jar", "core-business.jar"]

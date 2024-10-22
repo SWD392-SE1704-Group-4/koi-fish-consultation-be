@@ -1,5 +1,7 @@
 package com.fengshui.common.repository.postgresql.entities;
 
+import com.fengshui.common.repository.postgresql.enums.AdvertisementStatus;
+import com.fengshui.common.repository.postgresql.enums.AdvertisementType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +23,10 @@ public class AdvertisementEntity {
     @Column(name = "advertisement_id", updatable = false, nullable = false)
     private UUID id;
 
+    @ManyToOne
+    @JoinColumn(name = "advertisement_type", referencedColumnName = "advertisement_type_id")
+    private AdvertisementTypeEntity advertisementType;
+
     @Column(name = "advertisement_title")
     private String title;
 
@@ -33,9 +39,6 @@ public class AdvertisementEntity {
     @Column(name = "contact_info")
     private String contactInfo;
 
-    @Column(name = "advertisement_type")
-    private String advertisementType;
-
     @ManyToOne
     @JoinColumn(name = "koi_fish_id", referencedColumnName = "koi_fish_id")
     private KoiFishEntity koiFish;
@@ -47,7 +50,7 @@ public class AdvertisementEntity {
     private int viewsCount;
 
     @Column(name = "status")
-    private String status;
+    private AdvertisementStatus status;
 
     @Column(name = "admin_verified")
     private boolean adminVerified;
@@ -57,6 +60,12 @@ public class AdvertisementEntity {
 
     @Column(name = "posted_by")
     private String postedBy;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "address")
+    private String address;
 
     @ElementCollection
     @CollectionTable(name = "advertisement_images", joinColumns = @JoinColumn(name = "advertisement_id"))

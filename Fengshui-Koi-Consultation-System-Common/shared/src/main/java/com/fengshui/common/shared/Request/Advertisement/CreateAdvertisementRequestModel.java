@@ -13,13 +13,14 @@ import java.util.UUID;
 public class CreateAdvertisementRequestModel {
     private String title;
     private String description;
-    private String location;
-    private String contactInfo;
-//    private String advertisementType;
+    private UUID advertisementType;
     private LocalDateTime expirationDate;
     private UUID koiFishId;
-    private int quantity;
     private String postedBy;
     private MultipartFile[] additionalImages;
     private List<String> tags;
+    private String location;
+    private String contactInfo;
+    private String phone;
+    private String address;
 }

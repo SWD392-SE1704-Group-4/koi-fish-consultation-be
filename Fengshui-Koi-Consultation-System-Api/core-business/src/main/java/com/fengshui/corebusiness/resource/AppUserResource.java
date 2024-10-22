@@ -21,8 +21,9 @@ public class AppUserResource {
 
     @Autowired
     private AppUserService appUserService;
+
     @PostMapping(value = "/get-user-group", consumes = {"application/json"})
-    public ResponseEntity<GetAppUserGroupResponseModel> getKoiFish(@RequestBody GetAppUserGroupRequestModel requestModel) throws Exception {
+    public ResponseEntity<GetAppUserGroupResponseModel> getAppUserGroup(@RequestBody GetAppUserGroupRequestModel requestModel) throws Exception {
         return this.appUserService.getAppUserGroup(requestModel);
     }
 }

@@ -2,6 +2,7 @@ package com.fengshui.common.repository.postgresql.mapper;
 
 import com.fengshui.common.repository.postgresql.dto.AdvertisementDTO;
 import com.fengshui.common.repository.postgresql.entities.AdvertisementEntity;
+import com.fengshui.common.repository.postgresql.enums.AdvertisementStatus;
 
 public class AdvertisementMapper {
     // Convert from AdvertisementEntity to AdvertisementDTO
@@ -15,10 +16,10 @@ public class AdvertisementMapper {
                 .description(entity.getDescription())
                 .location(entity.getLocation())
                 .contactInfo(entity.getContactInfo())
-                .advertisementType(entity.getAdvertisementType())
+                .advertisementType(AdvertisementTypeMapper.toDTO(entity.getAdvertisementType()))
                 .viewsCount(entity.getViewsCount())
                 .quantity(entity.getQuantity())
-                .status(entity.getStatus())
+                .status(String.valueOf(entity.getStatus()))
                 .adminVerified(entity.isAdminVerified())
                 .expirationDate(entity.getExpirationDate())
                 .koiFish(KoiFishMapper.toDTO(entity.getKoiFish()))
@@ -42,10 +43,10 @@ public class AdvertisementMapper {
                 .description(dto.getDescription())
                 .location(dto.getLocation())
                 .contactInfo(dto.getContactInfo())
-                .advertisementType(dto.getAdvertisementType())
+                .advertisementType(AdvertisementTypeMapper.toEntity(dto.getAdvertisementType()))
                 .quantity(dto.getQuantity())
                 .viewsCount(dto.getViewsCount())
-                .status(dto.getStatus())
+                .status(AdvertisementStatus.valueOf(dto.getStatus()))
                 .adminVerified(dto.isAdminVerified())
                 .expirationDate(dto.getExpirationDate())
                 .postedBy(dto.getPostedBy())

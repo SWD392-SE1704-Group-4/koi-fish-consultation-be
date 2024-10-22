@@ -3,22 +3,21 @@ package com.fengshui.common.services.impl;
 import com.fengshui.common.aws.Cognito.CognitoUserPool;
 import com.fengshui.common.aws.S3Client.S3Client;
 import com.fengshui.common.repository.postgresql.IAdvertisementRepository;
+import com.fengshui.common.repository.postgresql.IAdvertisementTypeRepository;
 import com.fengshui.common.repository.postgresql.IFengshuiElementRepository;
 import com.fengshui.common.repository.postgresql.IKoiFishRepository;
 import com.fengshui.common.repository.postgresql.dto.AdvertisementDTO;
+import com.fengshui.common.repository.postgresql.dto.AdvertisementTypeDTO;
 import com.fengshui.common.repository.postgresql.entities.AdvertisementEntity;
+import com.fengshui.common.repository.postgresql.entities.AdvertisementTypeEntity;
 import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
+import com.fengshui.common.repository.postgresql.enums.AdvertisementStatus;
 import com.fengshui.common.repository.postgresql.mapper.AdvertisementMapper;
+import com.fengshui.common.repository.postgresql.mapper.AdvertisementTypeMapper;
 import com.fengshui.common.services.AdvertisementService;
 import com.fengshui.common.shared.Constants.ImageType;
-import com.fengshui.common.shared.Request.Advertisement.CreateAdvertisementRequestModel;
-import com.fengshui.common.shared.Request.Advertisement.DeleteAdvertisementRequestModel;
-import com.fengshui.common.shared.Request.Advertisement.GetListAdvertisementRequestModel;
-import com.fengshui.common.shared.Request.Advertisement.UpdateAdvertisementRequestModel;
-import com.fengshui.common.shared.Response.Advertisement.CreateAdvertisementResponseModel;
-import com.fengshui.common.shared.Response.Advertisement.DeleteAdvertisementResponseModel;
-import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
-import com.fengshui.common.shared.Response.Advertisement.UpdateAdvertisementResponseModel;
+import com.fengshui.common.shared.Request.Advertisement.*;
+import com.fengshui.common.shared.Response.Advertisement.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +42,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     IAdvertisementRepository advertisementRepository;
 
     @Autowired
+    IAdvertisementTypeRepository advertisementTypeRepository;
+
+    @Autowired
     IKoiFishRepository koiFishRepository;
 
     @Override
@@ -65,15 +67,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
             KoiFishEntity koiFish = koiFishRepository
                     .findById(requestModel.getKoiFishId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Koi Fish ID"));
+            AdvertisementTypeEntity adsType = advertisementTypeRepository
+                    .findById(requestModel.getAdvertisementType())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Ads ID"));
             AdvertisementEntity advertisement = AdvertisementEntity.builder()
                     .title(requestModel.getTitle())
+                    .advertisementType(adsType)
                     .description(requestModel.getDescription())
-                    .location(requestModel.getLocation())
-                    .contactInfo(requestModel.getContactInfo())
-                    .quantity(requestModel.getQuantity())
                     .koiFish(koiFish)
                     .postedBy(requestModel.getPostedBy())
                     .additionalImages(uploadedImageUrls)
+                    .location(requestModel.getLocation())
+                    .contactInfo(requestModel.getContactInfo())
+                    .address(requestModel.getAddress())
+                    .phone(requestModel.getPhone())
                     .build();
             AdvertisementEntity newAdvertisement = advertisementRepository.save(advertisement);
             response = new CreateAdvertisementResponseModel(false, AdvertisementMapper.toDTO(newAdvertisement), null);
@@ -113,6 +120,48 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Override
+    public ResponseEntity<GetAdvertisementByIdResponseModel> getAdvertisementById(GetAdvertisementByIdRequestModel requestModel) {
+        GetAdvertisementByIdResponseModel response;
+        Optional<AdvertisementEntity> optionalAdvertisement = this.advertisementRepository.findById(requestModel.getAdvertisementId());
+
+        if (optionalAdvertisement.isEmpty() || optionalAdvertisement.get().isDeleted()) {
+            // Return a response indicating that the advertisement was not found or is deleted
+            response = new GetAdvertisementByIdResponseModel(true, null, "Advertisement not found or has been deleted.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        AdvertisementEntity advertisement = optionalAdvertisement.get();
+        AdvertisementDTO dto = AdvertisementMapper.toDTO(advertisement);
+        if (dto.getPostedBy() != null) {
+            try {
+                AdminGetUserResponse userResponse = cognitoUserPool.getUserById(dto.getPostedBy().toString());
+                if (userResponse != null) {
+                    Map<String, String> userInfo = new HashMap<>();
+                    userResponse.userAttributes().forEach(attribute ->
+                            userInfo.put(attribute.name(), attribute.value())
+                    );
+                    dto.setUserInfo(userInfo);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        response = new GetAdvertisementByIdResponseModel(false, dto, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementType(GetListAdvertisementRequestModel requestModel) {
+        List<AdvertisementTypeDTO> advertisementTypeList = this.advertisementTypeRepository.findAll()
+                .stream()
+                .map(AdvertisementTypeMapper::toDTO)
+                .toList();
+
+        GetListAdvertisementResponseModel response = new GetListAdvertisementResponseModel(false, advertisementTypeList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     @Override
     public ResponseEntity<UpdateAdvertisementResponseModel> updateAdvertisement(UpdateAdvertisementRequestModel requestModel) {
@@ -122,5 +171,54 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     @Override
     public ResponseEntity<DeleteAdvertisementResponseModel> deleteAdvertisement(DeleteAdvertisementRequestModel requestModel) {
         return null;
+    }
+
+    @Override
+    public ResponseEntity<VerifyAdvertisementResponseModel> verifyAdvertisement(VerifyAdvertisementRequestModel requestModel) {
+        VerifyAdvertisementResponseModel responseModel;
+
+        Optional<AdvertisementEntity> advertisementOptional = advertisementRepository.findById(requestModel.getAdvertisementId());
+
+        if (advertisementOptional.isEmpty()) {
+            // If the advertisement does not exist, return a 404 response
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new VerifyAdvertisementResponseModel(true, "Advertisement not found", null));
+        }
+
+        // Get the advertisement and update its status
+        AdvertisementEntity advertisement = advertisementOptional.get();
+        advertisement.setAdminVerified(true);
+        advertisement.setStatus(AdvertisementStatus.APPROVED); // Assuming APPROVED is the verified status
+
+        // Save the changes to the repository
+        advertisementRepository.save(advertisement);
+
+        // Return success response
+        responseModel = new VerifyAdvertisementResponseModel(false, "Advertisement verified successfully", null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
+    }
+
+    @Override
+    public ResponseEntity<DenyAdvertisementResponseModel> denyAdvertisement(DenyAdvertisementRequestModel requestModel) {
+        DenyAdvertisementResponseModel responseModel;
+
+        Optional<AdvertisementEntity> advertisementOptional = advertisementRepository.findById(requestModel.getAdvertisementId());
+
+        if (advertisementOptional.isEmpty()) {
+            // If the advertisement does not exist, return a 404 response
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new DenyAdvertisementResponseModel(true, "Advertisement not found", null));
+        }
+
+        // Get the advertisement and update its status
+        AdvertisementEntity advertisement = advertisementOptional.get();
+        advertisement.setAdminVerified(false);
+        advertisement.setStatus(AdvertisementStatus.REJECTED); // Assuming REJECTED is the denied status
+
+        // Save the changes to the repository
+        advertisementRepository.save(advertisement);
+
+        responseModel = new DenyAdvertisementResponseModel(false, "Advertisement denied successfully", null);
+        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
     }
 }

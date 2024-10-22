@@ -1,5 +1,6 @@
 package com.fengshui.common.repository.postgresql.dto;
 
+import com.fengshui.common.repository.postgresql.enums.AdvertisementType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class AdvertisementDTO {
     private String description;
     private String location;
     private String contactInfo;
-    private String advertisementType;
+    private AdvertisementTypeDTO advertisementType;
     private int quantity;
     private int viewsCount;
     private String status;

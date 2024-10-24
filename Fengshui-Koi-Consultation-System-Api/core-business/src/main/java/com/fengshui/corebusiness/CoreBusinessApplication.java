@@ -15,9 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @EntityScan(basePackages = {"com.fengshui.common.repository.postgresql.entities"})
 @EnableJpaRepositories(basePackages = {"com.fengshui.common.repository"})
 public class CoreBusinessApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(CoreBusinessApplication.class, args);
     }
-
 }

@@ -15,7 +15,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "fish_pond")
 public class FishPondEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "pond_id")

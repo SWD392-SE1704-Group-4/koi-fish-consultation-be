@@ -3,15 +3,18 @@ package com.fengshui.common.services.impl;
 import com.fengshui.common.aws.Cognito.CognitoUserPool;
 import com.fengshui.common.repository.postgresql.IAdvertisementPackageRepository;
 import com.fengshui.common.repository.postgresql.dto.AdvertisementPackageDTO;
+import com.fengshui.common.repository.postgresql.entities.AdvertisementEntity;
 import com.fengshui.common.repository.postgresql.entities.AdvertisementPackageEntity;
 import com.fengshui.common.repository.postgresql.mapper.AdvertisementMapper;
 import com.fengshui.common.repository.postgresql.mapper.AdvertisementPackageMapper;
 import com.fengshui.common.services.AdvertisementPackageService;
 import com.fengshui.common.shared.Request.AdvertisementPackage.CreateAdvertisementPackageRequestModel;
 //import com.fengshui.common.shared.Response.Advertisement.CreateAdvertisementResponseModel;
+import com.fengshui.common.shared.Request.AdvertisementPackage.GetAdvertisementPackageByIdRequestModel;
 import com.fengshui.common.shared.Request.AdvertisementPackage.GetListAdvertisementPackageRequestModel;
 import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
 import com.fengshui.common.shared.Response.AdvertisementPackage.CreateAdvertisementPackageResponseModel;
+import com.fengshui.common.shared.Response.AdvertisementPackage.GetAdvertisementPackageByIdResponseModel;
 import com.fengshui.common.shared.Response.AdvertisementPackage.GetListAdvertisementPackageResponseModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,31 +63,33 @@ public class AdvertisementPackageServiceImpl implements AdvertisementPackageServ
 
 //    @Override
 //    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(GetAdvertisementPackageByIdRequestModel requestModel) {
-//        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getPackageId());
+//        GetListAdvertisementPackageResponseModel response;
+//        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getAdvertisementPackageId());
 //
 //        if (optionalPackage.isEmpty()) {
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND)
 //                    .body(new GetAdvertisementPackageByIdResponseModel(true, null, "Package not found"));
 //        }
 //
-//        AdvertisementPackageDTO dto = AdvertisementPackageMapper.toDTO(optionalPackage.get());
+//        AdvertisementPackageEntity advertisementPackage = optionalPackage.get();
+//        AdvertisementPackageDTO dto = AdvertisementPackageMapper.toDTO(advertisementPackage);
 //        return ResponseEntity.status(HttpStatus.OK)
 //                .body(new GetAdvertisementPackageByIdResponseModel(false, dto, null));
 //    }
 
-//    @Override
-//    public ResponseEntity<GetListAdvertisementPackageResponseModel> getListAdvertisementPackage(GetListAdvertisementPackageRequestModel requestModel) {
-//        GetListAdvertisementPackageResponseModel response;
-//        List<AdvertisementPackageDTO> packageList = advertisementPackageRepository.findAll()
-//                .stream()
-//                .map(AdvertisementPackageMapper::toDTO)
-//                .collect(Collectors.toList());
-//
-////        return ResponseEntity.status(HttpStatus.OK)
-////                .body(new GetListAdvertisementPackageResponseModel(false, packageList, null));
-//        response = new GetListAdvertisementPackageResponseModel(false, packageList, null);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
+    @Override
+    public ResponseEntity<GetListAdvertisementPackageResponseModel> getListAdvertisementPackage(GetListAdvertisementPackageRequestModel requestModel) {
+        GetListAdvertisementPackageResponseModel response;
+        List<AdvertisementPackageDTO> packageList = advertisementPackageRepository.findAll()
+                .stream()
+                .map(AdvertisementPackageMapper::toDTO)
+                .collect(Collectors.toList());
+
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .body(new GetListAdvertisementPackageResponseModel(false, packageList, null));
+        response = new GetListAdvertisementPackageResponseModel(false, packageList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
 
 //    @Override
 //    public ResponseEntity<UpdateAdvertisementPackageResponseModel> updateAdvertisementPackage(UpdateAdvertisementPackageRequestModel requestModel) {

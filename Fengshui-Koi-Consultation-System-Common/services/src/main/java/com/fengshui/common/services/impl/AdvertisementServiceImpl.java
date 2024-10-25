@@ -180,17 +180,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         Optional<AdvertisementEntity> advertisementOptional = advertisementRepository.findById(requestModel.getAdvertisementId());
 
         if (advertisementOptional.isEmpty()) {
-            // If the advertisement does not exist, return a 404 response
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new VerifyAdvertisementResponseModel(true, "Advertisement not found", null));
         }
 
-        // Get the advertisement and update its status
         AdvertisementEntity advertisement = advertisementOptional.get();
         advertisement.setAdminVerified(true);
         advertisement.setStatus(AdvertisementStatus.APPROVED); // Assuming APPROVED is the verified status
 
-        // Save the changes to the repository
         advertisementRepository.save(advertisement);
 
         // Return success response

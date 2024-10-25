@@ -8,12 +8,6 @@
         <option value="$PROJECT_DIR$/Fengshui-Koi-Consultation-System-Common/shared/pom.xml" />
       </list>
     </option>
-    <option name="ignoredFiles">
-      <set>
-        <option value="$PROJECT_DIR$/Fengshui-Koi-Consultation-System-Api/admin-business/pom.xml" />
-        <option value="$PROJECT_DIR$/Fengshui-Koi-Consultation-System-Common/response/pom.xml" />
-      </set>
-    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_20" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK" />
 </project>

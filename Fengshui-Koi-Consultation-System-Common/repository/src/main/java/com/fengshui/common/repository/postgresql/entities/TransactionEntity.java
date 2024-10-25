@@ -3,8 +3,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 @Getter
 @Setter
@@ -13,18 +11,18 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "transaction")
-public class Transaction {
+public class TransactionEntity {
     @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column (name = "transaction_id")
-    private UUID transaction_id;
+    private UUID Id;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @OneToOne
-    @JoinColumn (name = "user_id", referencedColumnName = "user_id")
-    private String userId;
+    @JoinColumn (name = "app_user_id", referencedColumnName = "app_user_id")
+    private AppUser UserId;
 
     @Column (name = "ads_package")
     private String adsPackage;

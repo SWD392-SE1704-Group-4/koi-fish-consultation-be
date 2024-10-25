@@ -24,7 +24,7 @@ public class FengshuiElementResource {
     private FengshuiElementService fengshuiElementService;
 
     @PostMapping(value = "/get-list", consumes = {"application/json"})
-    public ResponseEntity<GetFengshuiElementResponseModel> getKoiFish(@RequestBody GetFengshuiElementRequestModel requestModel) throws Exception {
+    public ResponseEntity<GetFengshuiElementResponseModel> getFengshuiElement(@RequestBody GetFengshuiElementRequestModel requestModel) throws Exception {
         return this.fengshuiElementService.getListFengshuiElement(requestModel);
     }
 }

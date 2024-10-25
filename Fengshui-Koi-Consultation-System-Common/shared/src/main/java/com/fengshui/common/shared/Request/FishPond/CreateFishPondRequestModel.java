@@ -2,8 +2,14 @@ package com.fengshui.common.shared.Request.FishPond;
 
 import com.fengshui.common.shared.Response.BaseResponseModel;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
-public class CreateFishPondRequestModel {
+import java.io.Serializable;
+import java.util.UUID;
+
+@Getter
+@Setter
+public class CreateFishPondRequestModel implements Serializable {
     private String pondName;
     private String pondShape;
     private Double pondSize;  // in square meters
@@ -18,4 +24,6 @@ public class CreateFishPondRequestModel {
     private String pondElement;   // Feng Shui element associated with the pond (e.g., Water, Earth, etc.)
     private String pondLocation;  // Indoor or outdoor
     private String pondOrientation;  // Direction the pond is facing
+    private MultipartFile[] fishPondPictures;
+    private UUID fengshuiElement;
 }

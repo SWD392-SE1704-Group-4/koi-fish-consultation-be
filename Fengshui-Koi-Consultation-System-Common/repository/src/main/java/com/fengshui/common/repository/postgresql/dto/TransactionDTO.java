@@ -10,9 +10,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-
 public class TransactionDTO {
-    private UUID transaction_id;
+    private UUID id;
     private LocalDateTime createdAt;
     private String userId;
     private String adsPackage;

@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 public interface FishPondService {
     public ResponseEntity<CreateFishPondResponseModel> createFishPond(CreateFishPondRequestModel requestModel);
     public ResponseEntity<GetFishPondResponseModel> getListFishPond(GetFishPondRequestModel requestModel);
-
     public ResponseEntity<UpdateFishPondResponseModel> updateFishPond(UpdateFishPondRequestModel requestModel);
     public ResponseEntity<DeleteFishPondResponseModel> deleteFishPond(DeleteFishPondRequestModel requestModel);
 }

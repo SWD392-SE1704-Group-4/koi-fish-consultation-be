@@ -50,7 +50,6 @@ public class FishPondServiceImpl implements FishPondService {
     public ResponseEntity<CreateFishPondResponseModel> createFishPond(CreateFishPondRequestModel requestModel) {
         CreateFishPondResponseModel response;
         try {
-            // Upload fish pond pictures to S3
             MultipartFile[] fishPondPictures = requestModel.getFishPondPictures();
             List<String> uploadedImageUrls = new ArrayList<>();
             for (MultipartFile picture : fishPondPictures) {
@@ -61,13 +60,9 @@ public class FishPondServiceImpl implements FishPondService {
                     throw new IOException("Failed to upload one or more images.");
                 }
             }
-
-            // Fetch the Feng Shui element based on the provided fengShuiElementId
             FengshuiElementEntity fengshuiElement = fengshuiElementRepository
                     .findById(requestModel.getFengshuiElement())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Element ID"));
-
-            // Build the Fish Pond entity
             FishPondEntity fishPond = FishPondEntity.builder()
                     .pondName(requestModel.getPondName())
                     .pondShape(requestModel.getPondShape())
@@ -80,7 +75,7 @@ public class FishPondServiceImpl implements FishPondService {
                     .isSaltwater(requestModel.getIsSaltwater())
                     .numKoiFish(requestModel.getNumKoiFish())
                     .waterCapacity(requestModel.getWaterCapacity())
-//                    .pondElement(requestModel.getPondElement())  // Feng Shui element
+//                    .pondElement(requestModel.getPondElement())
                     .pondLocation(requestModel.getPondLocation())
                     .pondOrientation(requestModel.getPondOrientation())
                     .pondPictures(uploadedImageUrls)

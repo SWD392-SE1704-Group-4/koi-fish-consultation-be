@@ -20,9 +20,9 @@ public class CreateFishPondRequestModel implements Serializable {
     private Boolean hasRocks;
     private Boolean isSaltwater;
     private Integer numKoiFish;
-    private Double waterCapacity;  // in liters or cubic meters
-    private String pondLocation;  // Indoor or outdoor
-    private String pondOrientation;  // Direction the pond is facing
+    private Double waterCapacity;
+    private String pondLocation;
+    private UUID pondOrientation;
     private MultipartFile[] fishPondPictures;
-    private UUID fengshuiElement;
+    private UUID createdBy;
 }

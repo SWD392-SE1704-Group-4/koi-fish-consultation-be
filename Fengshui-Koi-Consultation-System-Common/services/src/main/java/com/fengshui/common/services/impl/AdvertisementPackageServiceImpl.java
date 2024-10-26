@@ -61,21 +61,21 @@ public class AdvertisementPackageServiceImpl implements AdvertisementPackageServ
         }
     }
 
-//    @Override
-//    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(GetAdvertisementPackageByIdRequestModel requestModel) {
-//        GetListAdvertisementPackageResponseModel response;
-//        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getAdvertisementPackageId());
-//
-//        if (optionalPackage.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new GetAdvertisementPackageByIdResponseModel(true, null, "Package not found"));
-//        }
-//
-//        AdvertisementPackageEntity advertisementPackage = optionalPackage.get();
-//        AdvertisementPackageDTO dto = AdvertisementPackageMapper.toDTO(advertisementPackage);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(new GetAdvertisementPackageByIdResponseModel(false, dto, null));
-//    }
+    @Override
+    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(GetAdvertisementPackageByIdRequestModel requestModel) {
+        GetListAdvertisementPackageResponseModel response;
+        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getAdvertisementPackageId());
+
+        if (optionalPackage.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new GetAdvertisementPackageByIdResponseModel(true, null, "Package not found"));
+        }
+
+        AdvertisementPackageEntity advertisementPackage = optionalPackage.get();
+        AdvertisementPackageDTO dto = AdvertisementPackageMapper.toDTO(advertisementPackage);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new GetAdvertisementPackageByIdResponseModel(false, dto, null));
+    }
 
     @Override
     public ResponseEntity<GetListAdvertisementPackageResponseModel> getListAdvertisementPackage(GetListAdvertisementPackageRequestModel requestModel) {

@@ -15,5 +15,5 @@ import org.springframework.http.ResponseEntity;
 public interface AdvertisementPackageService {
     public ResponseEntity<CreateAdvertisementPackageResponseModel>createAdvertisementPackage(CreateAdvertisementPackageRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementPackageResponseModel> getListAdvertisementPackage(GetListAdvertisementPackageRequestModel requestModel);
-//    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(GetAdvertisementPackageByIdRequestModel requestModel);
+    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(GetAdvertisementPackageByIdRequestModel requestModel);
 }

@@ -36,8 +36,8 @@ public class AdvertisementPackageResource {
         return this.advertisementPackageService.getListAdvertisementPackage(requestModel);
     }
 
-//    @PostMapping(value = "/get-by-id", consumes = {"application/json"})
-//    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(@RequestBody GetAdvertisementPackageByIdRequestModel requestModel) throws Exception {
-//        return this.advertisementPackageService.getAdvertisementPackageById(requestModel);
-//    }
+    @PostMapping(value = "/get-by-id", consumes = {"application/json"})
+    public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(@RequestBody GetAdvertisementPackageByIdRequestModel requestModel) throws Exception {
+        return this.advertisementPackageService.getAdvertisementPackageById(requestModel);
+    }
 }

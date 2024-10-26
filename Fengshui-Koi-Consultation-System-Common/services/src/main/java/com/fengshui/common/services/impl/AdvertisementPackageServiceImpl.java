@@ -12,10 +12,13 @@ import com.fengshui.common.shared.Request.AdvertisementPackage.CreateAdvertiseme
 //import com.fengshui.common.shared.Response.Advertisement.CreateAdvertisementResponseModel;
 import com.fengshui.common.shared.Request.AdvertisementPackage.GetAdvertisementPackageByIdRequestModel;
 import com.fengshui.common.shared.Request.AdvertisementPackage.GetListAdvertisementPackageRequestModel;
+import com.fengshui.common.shared.Request.AdvertisementPackage.UpdateAdvertisementPackageRequestModel;
+import com.fengshui.common.shared.Response.Advertisement.GetAdvertisementByIdResponseModel;
 import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
 import com.fengshui.common.shared.Response.AdvertisementPackage.CreateAdvertisementPackageResponseModel;
 import com.fengshui.common.shared.Response.AdvertisementPackage.GetAdvertisementPackageByIdResponseModel;
 import com.fengshui.common.shared.Response.AdvertisementPackage.GetListAdvertisementPackageResponseModel;
+import com.fengshui.common.shared.Response.AdvertisementPackage.UpdateAdvertisementPackageResponseModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,8 +66,8 @@ public class AdvertisementPackageServiceImpl implements AdvertisementPackageServ
 
     @Override
     public ResponseEntity<GetAdvertisementPackageByIdResponseModel> getAdvertisementPackageById(GetAdvertisementPackageByIdRequestModel requestModel) {
-        GetListAdvertisementPackageResponseModel response;
-        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getAdvertisementPackageId());
+        GetAdvertisementByIdResponseModel response;
+        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getPackageId());
 
         if (optionalPackage.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -91,34 +94,35 @@ public class AdvertisementPackageServiceImpl implements AdvertisementPackageServ
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-//    @Override
-//    public ResponseEntity<UpdateAdvertisementPackageResponseModel> updateAdvertisementPackage(UpdateAdvertisementPackageRequestModel requestModel) {
-//        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getPackageId());
-//
-//        if (optionalPackage.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new UpdateAdvertisementPackageResponseModel(true, "Package not found", null));
-//        }
-//
-//        try {
-//            AdvertisementPackageEntity packageEntity = optionalPackage.get();
-//            packageEntity.setPackageName(requestModel.getPackageName());
-//            packageEntity.setDescription(requestModel.getDescription());
-//            packageEntity.setPrice(requestModel.getPrice());
-//            packageEntity.setDurationInDays(requestModel.getDurationInDays());
-//            packageEntity.setMaxAds(requestModel.getMaxAds());
-//            packageEntity.setIsActive(requestModel.getIsActive());
-//
-//            AdvertisementPackageEntity updatedPackage = advertisementPackageRepository.save(packageEntity);
-//            AdvertisementPackageDTO dto = AdvertisementPackageMapper.toDTO(updatedPackage);
-//
-//            return ResponseEntity.status(HttpStatus.OK)
-//                    .body(new UpdateAdvertisementPackageResponseModel(false, dto, null));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new UpdateAdvertisementPackageResponseModel(true, null, e.getMessage()));
-//        }
-//    }
+    @Override
+    public ResponseEntity<UpdateAdvertisementPackageResponseModel> updateAdvertisementPackage(UpdateAdvertisementPackageRequestModel requestModel) {
+        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getPackageId());
+
+        if (optionalPackage.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new UpdateAdvertisementPackageResponseModel(true, null, "Package not found"));
+        }
+
+        try {
+            AdvertisementPackageEntity packageEntity = optionalPackage.get();
+            packageEntity.setPackageName(requestModel.getPackageName());
+            packageEntity.setDescription(requestModel.getDescription());
+            packageEntity.setPrice(requestModel.getPrice());
+            packageEntity.setDurationInDays(requestModel.getDurationInDays());
+            packageEntity.setMaxAds(requestModel.getMaxAds());
+//            packageEntity.setActive(requestModel.getIsActive());
+
+            AdvertisementPackageEntity updatedPackage = advertisementPackageRepository.save(packageEntity);
+
+            AdvertisementPackageDTO dto = AdvertisementPackageMapper.toDTO(updatedPackage);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new UpdateAdvertisementPackageResponseModel(false, dto, null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new UpdateAdvertisementPackageResponseModel(true, null, e.getMessage()));
+        }
+    }
 
 //    @Override
 //    public ResponseEntity<DeleteAdvertisementPackageResponseModel> deleteAdvertisementPackage(DeleteAdvertisementPackageRequestModel requestModel) {

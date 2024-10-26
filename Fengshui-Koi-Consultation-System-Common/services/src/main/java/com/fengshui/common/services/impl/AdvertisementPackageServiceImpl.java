@@ -8,17 +8,11 @@ import com.fengshui.common.repository.postgresql.entities.AdvertisementPackageEn
 import com.fengshui.common.repository.postgresql.mapper.AdvertisementMapper;
 import com.fengshui.common.repository.postgresql.mapper.AdvertisementPackageMapper;
 import com.fengshui.common.services.AdvertisementPackageService;
-import com.fengshui.common.shared.Request.AdvertisementPackage.CreateAdvertisementPackageRequestModel;
+import com.fengshui.common.shared.Request.AdvertisementPackage.*;
 //import com.fengshui.common.shared.Response.Advertisement.CreateAdvertisementResponseModel;
-import com.fengshui.common.shared.Request.AdvertisementPackage.GetAdvertisementPackageByIdRequestModel;
-import com.fengshui.common.shared.Request.AdvertisementPackage.GetListAdvertisementPackageRequestModel;
-import com.fengshui.common.shared.Request.AdvertisementPackage.UpdateAdvertisementPackageRequestModel;
 import com.fengshui.common.shared.Response.Advertisement.GetAdvertisementByIdResponseModel;
 import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
-import com.fengshui.common.shared.Response.AdvertisementPackage.CreateAdvertisementPackageResponseModel;
-import com.fengshui.common.shared.Response.AdvertisementPackage.GetAdvertisementPackageByIdResponseModel;
-import com.fengshui.common.shared.Response.AdvertisementPackage.GetListAdvertisementPackageResponseModel;
-import com.fengshui.common.shared.Response.AdvertisementPackage.UpdateAdvertisementPackageResponseModel;
+import com.fengshui.common.shared.Response.AdvertisementPackage.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -124,24 +118,24 @@ public class AdvertisementPackageServiceImpl implements AdvertisementPackageServ
         }
     }
 
-//    @Override
-//    public ResponseEntity<DeleteAdvertisementPackageResponseModel> deleteAdvertisementPackage(DeleteAdvertisementPackageRequestModel requestModel) {
-//        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getPackageId());
-//
-//        if (optionalPackage.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body(new DeleteAdvertisementPackageResponseModel(true, "Package not found"));
-//        }
-//
-//        try {
-//            AdvertisementPackageEntity packageEntity = optionalPackage.get();
-//            advertisementPackageRepository.delete(packageEntity);
-//
-//            return ResponseEntity.status(HttpStatus.OK)
-//                    .body(new DeleteAdvertisementPackageResponseModel(false, "Package deleted successfully"));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new DeleteAdvertisementPackageResponseModel(true, e.getMessage()));
-//        }
-//    }
+    @Override
+    public ResponseEntity<DeleteAdvertisementPackageResponseModel> deleteAdvertisementPackage(DeleteAdvertisementPackageRequestModel requestModel) {
+        Optional<AdvertisementPackageEntity> optionalPackage = advertisementPackageRepository.findById(requestModel.getPackageId());
+
+        if (optionalPackage.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new DeleteAdvertisementPackageResponseModel(true, null,"Package not found"));
+        }
+
+        try {
+            AdvertisementPackageEntity packageEntity = optionalPackage.get();
+            advertisementPackageRepository.delete(packageEntity);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new DeleteAdvertisementPackageResponseModel(false, null, "Package deleted successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new DeleteAdvertisementPackageResponseModel(true, null, e.getMessage()));
+        }
+    }
 }

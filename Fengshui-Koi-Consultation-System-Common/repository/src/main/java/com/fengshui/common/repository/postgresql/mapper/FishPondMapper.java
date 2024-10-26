@@ -22,9 +22,8 @@ public class FishPondMapper {
                 .isSaltwater(entity.getIsSaltwater())
                 .numKoiFish(entity.getNumKoiFish())
                 .waterCapacity(entity.getWaterCapacity())
-                .pondElement(entity.getPondElement())
                 .pondLocation(entity.getPondLocation())
-                .pondOrientation(entity.getPondOrientation())
+                .pondOrientation(FengshuiDirectionMapper.toDTO(entity.getPondOrientation())) // Convert to DTO
                 .build();
     }
 
@@ -46,9 +45,8 @@ public class FishPondMapper {
                 .isSaltwater(dto.getIsSaltwater())
                 .numKoiFish(dto.getNumKoiFish())
                 .waterCapacity(dto.getWaterCapacity())
-                .pondElement(dto.getPondElement())
                 .pondLocation(dto.getPondLocation())
-                .pondOrientation(dto.getPondOrientation())
+                .pondOrientation(FengshuiDirectionMapper.toEntity(dto.getPondOrientation())) // Convert to Entity
                 .build();
     }
 }

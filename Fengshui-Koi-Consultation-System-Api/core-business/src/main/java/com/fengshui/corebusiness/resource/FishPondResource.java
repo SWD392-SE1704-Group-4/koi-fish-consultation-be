@@ -27,8 +27,8 @@ public class FishPondResource {
     private FishPondService fishPondService;
 
 
-    @PostMapping(path = "/create", consumes = {"application/json"})
-    public ResponseEntity<CreateFishPondResponseModel> createKoiFish(@RequestBody CreateFishPondRequestModel requestModel) throws Exception {
+    @PostMapping(path = "/create", consumes = {"multipart/form-data"})
+    public ResponseEntity<CreateFishPondResponseModel> createKoiFish(@ModelAttribute CreateFishPondRequestModel requestModel) throws Exception {
         return this.fishPondService.createFishPond(requestModel);
     }
 

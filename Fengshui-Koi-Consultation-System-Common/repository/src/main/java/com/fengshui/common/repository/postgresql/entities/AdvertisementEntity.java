@@ -17,7 +17,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "advertisement")
 public class AdvertisementEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "advertisement_id", updatable = false, nullable = false)
@@ -49,7 +48,7 @@ public class AdvertisementEntity {
     @Column(name = "views_count")
     private int viewsCount;
 
-    @Column(name = "status")
+    @Enumerated(EnumType.ORDINAL)
     private AdvertisementStatus status;
 
     @Column(name = "admin_verified")
@@ -85,6 +84,11 @@ public class AdvertisementEntity {
 
     @Column(name = "deleted")
     private boolean deleted;
+
+    // Relationship with AppUserEntity
+    @ManyToOne
+    @JoinColumn(name = "app_user_id", nullable = false)
+    private AppUserEntity createdBy;
 
     @PrePersist
     protected void onCreate() {

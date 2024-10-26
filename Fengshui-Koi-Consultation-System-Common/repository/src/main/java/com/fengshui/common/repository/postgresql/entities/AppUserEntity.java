@@ -1,12 +1,10 @@
 package com.fengshui.common.repository.postgresql.entities;
 
-import com.fengshui.common.repository.postgresql.enums.AdvertisementStatus;
 import com.fengshui.common.repository.postgresql.enums.AppUserRole;
 import com.fengshui.common.repository.postgresql.enums.AppUserStatus;
 import com.fengshui.common.repository.postgresql.enums.GenderEnum;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,13 +16,17 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@Builder
 @Entity
 @Table(name = "app_user")
 public class AppUserEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "app_user_id", unique = true, nullable = false)
     private UUID id;
+
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -83,6 +85,9 @@ public class AppUserEntity {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.emailVerified = false;
+        this.phoneNumberVerified = false;
+        this.role = AppUserRole.USER;
     }
 
     @PreUpdate

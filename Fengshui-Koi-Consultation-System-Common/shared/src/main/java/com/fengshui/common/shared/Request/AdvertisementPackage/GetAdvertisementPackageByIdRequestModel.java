@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @Setter
 public class GetAdvertisementPackageByIdRequestModel {
-    UUID advertisementPackageId;
+    UUID PackageId;
 }

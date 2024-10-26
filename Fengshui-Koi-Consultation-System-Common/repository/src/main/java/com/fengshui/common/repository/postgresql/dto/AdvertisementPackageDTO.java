@@ -18,9 +18,9 @@ public class AdvertisementPackageDTO {
     private String packageName;
     private String description;
     private BigDecimal price;
-    private Integer durationInDays;   // Duration of the advertisement package in days
-    private Integer maxAds;           // Maximum number of ads allowed in the package
-    private Boolean isActive;         // If the package is currently active
+    private int durationInDays;   // Duration of the advertisement package in days
+    private int maxAds;           // Maximum number of ads allowed in the package
+    private boolean isActive;         // If the package is currently active
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

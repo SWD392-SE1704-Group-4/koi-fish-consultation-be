@@ -37,7 +37,7 @@ public class AdvertisementPackageEntity {
     private Integer maxAds;   // Maximum number of ads allowed in the package
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    private boolean isActive;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

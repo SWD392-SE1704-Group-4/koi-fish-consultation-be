@@ -16,7 +16,7 @@ public class AdvertisementPackageMapper {
                 .price(entity.getPrice())
                 .durationInDays(entity.getDurationInDays())
                 .maxAds(entity.getMaxAds())
-                .isActive(entity.getIsActive())
+//                .isActive(entity.getActive())
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();
@@ -34,7 +34,7 @@ public class AdvertisementPackageMapper {
                 .price(dto.getPrice())
                 .durationInDays(dto.getDurationInDays())
                 .maxAds(dto.getMaxAds())
-                .isActive(dto.getIsActive())
+//                .isActive(dto.getActive())
 //                .createdAt(dto.getCreatedAt())
 //                .updatedAt(dto.getUpdatedAt())
                 .build();

@@ -34,7 +34,10 @@ public class AdvertisementResource {
     public ResponseEntity<GetAdvertisementByIdResponseModel> getAdvertisementById(@RequestBody GetAdvertisementByIdRequestModel requestModel) throws Exception {
         return this.advertisementService.getAdvertisementById(requestModel);
     }
-
+    @PostMapping(value = "/get-list-by-creator", consumes = {"application/json"})
+    public ResponseEntity<GetListAdvertisementByCreatorResponseModel> getListAdvertisement(@RequestBody GetListAdvertisementByCreatorRequestModel requestModel) throws Exception {
+        return this.advertisementService.getListAdvertisementByCreator(requestModel);
+    }
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisement(requestModel);

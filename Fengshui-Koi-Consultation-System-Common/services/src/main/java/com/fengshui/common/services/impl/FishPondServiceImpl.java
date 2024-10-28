@@ -11,14 +11,8 @@ import com.fengshui.common.repository.postgresql.mapper.FishPondMapper;
 import com.fengshui.common.repository.postgresql.mapper.KoiFishMapper;
 import com.fengshui.common.services.FishPondService;
 import com.fengshui.common.shared.Constants.ImageType;
-import com.fengshui.common.shared.Request.FishPond.CreateFishPondRequestModel;
-import com.fengshui.common.shared.Request.FishPond.DeleteFishPondRequestModel;
-import com.fengshui.common.shared.Request.FishPond.GetFishPondRequestModel;
-import com.fengshui.common.shared.Request.FishPond.UpdateFishPondRequestModel;
-import com.fengshui.common.shared.Response.FishPond.CreateFishPondResponseModel;
-import com.fengshui.common.shared.Response.FishPond.DeleteFishPondResponseModel;
-import com.fengshui.common.shared.Response.FishPond.GetFishPondResponseModel;
-import com.fengshui.common.shared.Response.FishPond.UpdateFishPondResponseModel;
+import com.fengshui.common.shared.Request.FishPond.*;
+import com.fengshui.common.shared.Response.FishPond.*;
 import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @ComponentScan(basePackages = "com.fengshui.common")
@@ -111,6 +106,20 @@ public class FishPondServiceImpl implements FishPondService {
                 .map(FishPondMapper::toDTO)
                 .toList();
         response = new GetFishPondResponseModel(false, fishPondList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    public ResponseEntity<GetFishPondByUserResponseModel> getListFishPondByCreator(GetFishPondByUserRequestModel requestModel) {
+        UUID userId = requestModel.getAppUserId();
+
+        List<FishPondDTO> fishPondList = fishPondRepository.findByCreator(userId)
+                .stream()
+                .filter(fishPond -> !fishPond.isDeleted())
+                .map(FishPondMapper::toDTO)
+                .toList();
+
+        GetFishPondByUserResponseModel response = new GetFishPondByUserResponseModel(false, fishPondList, null);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

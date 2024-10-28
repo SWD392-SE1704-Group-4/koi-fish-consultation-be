@@ -5,6 +5,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUse
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminUpdateUserAttributesResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.SignUpResponse;
 
+import java.security.PublicKey;
 import java.util.List;
 
 public interface CognitoUserPool {
@@ -15,4 +16,5 @@ public interface CognitoUserPool {
     void resendConfirmationCode(String username);
     public AdminGetUserResponse getUserById(String username);
     public List<String> getUserGroups(String username);
+    public PublicKey getPublicKeyFromJwk(String token) throws Exception;
 }

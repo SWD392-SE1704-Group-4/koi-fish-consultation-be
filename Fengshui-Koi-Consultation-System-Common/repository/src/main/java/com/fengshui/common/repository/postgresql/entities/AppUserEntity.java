@@ -68,7 +68,7 @@ public class AppUserEntity {
     private LocalDate lastLogin;
 
     // One-to-Many relationship with AdvertisementEntity
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "postedBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AdvertisementEntity> advertisements = new ArrayList<>();
 
     // One-to-Many relationship with FishPondEntity

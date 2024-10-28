@@ -1,5 +1,6 @@
 package com.fengshui.common.repository.postgresql.mapper;
 
+import com.fengshui.common.repository.postgresql.dto.AppUserDTO;
 import com.fengshui.common.repository.postgresql.dto.FishPondDTO;
 import com.fengshui.common.repository.postgresql.entities.FishPondEntity;
 
@@ -24,6 +25,8 @@ public class FishPondMapper {
                 .waterCapacity(entity.getWaterCapacity())
                 .pondLocation(entity.getPondLocation())
                 .pondOrientation(FengshuiDirectionMapper.toDTO(entity.getPondOrientation())) // Convert to DTO
+                .pondPictures(entity.getPondPictures())
+                .createBy(AppUserMapper.toDTO(entity.getCreatedBy()))
                 .build();
     }
 

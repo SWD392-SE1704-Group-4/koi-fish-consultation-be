@@ -81,6 +81,9 @@ public class FishPondEntity {
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
 
+    @OneToMany(mappedBy = "fishPond")
+    private List<AdvertisementEntity> advertisementList;
+
     // Automatically set the createdAt and updatedAt values
     @PrePersist
     protected void onCreate() {

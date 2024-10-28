@@ -9,6 +9,7 @@ import com.fengshui.common.shared.Response.AppUser.GetAppUserGroupResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +23,14 @@ public class AppUserResource {
     @Autowired
     private AppUserService appUserService;
 
+    @PreAuthorize("hasAnyRole('Member', 'Staff', 'Admin')")
     @PostMapping(value = "/get-user-group", consumes = {"application/json"})
     public ResponseEntity<GetAppUserGroupResponseModel> getAppUserGroup(@RequestBody GetAppUserGroupRequestModel requestModel) throws Exception {
+        return this.appUserService.getAppUserGroup(requestModel);
+    }
+
+    @PostMapping(value = "/authorize", consumes = {"application/json"})
+    public ResponseEntity<GetAppUserGroupResponseModel> authorizeUser(@RequestBody GetAppUserGroupRequestModel requestModel) throws Exception {
         return this.appUserService.getAppUserGroup(requestModel);
     }
 }

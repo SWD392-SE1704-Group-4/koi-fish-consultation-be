@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,21 +30,25 @@ public class KoiFishResource {
     private KoiFishService koiFishService;
 
 
+    @PreAuthorize("hasRole('Staff')")
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<CreateKoiFishResponseModel> createKoiFish(@ModelAttribute CreateKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.createKoiFish(requestModel);
     }
 
+    @PreAuthorize("hasRole('Staff')")
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetKoiFishResponseModel> getKoiFish(@RequestBody GetKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.getListKoiFish(requestModel);
     }
 
+    @PreAuthorize("hasRole('Staff')")
     @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<UpdateKoiFishResponseModel> updateKoiFish(@ModelAttribute UpdateKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.updateKoiFish(requestModel);
     }
 
+    @PreAuthorize("hasRole('Staff')")
     @PostMapping(value = "/delete", consumes = {"application/json"})
     public ResponseEntity<DeleteKoiFishResponseModel> deleteKoiFish(@RequestBody DeleteKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.deleteKoiFish(requestModel);

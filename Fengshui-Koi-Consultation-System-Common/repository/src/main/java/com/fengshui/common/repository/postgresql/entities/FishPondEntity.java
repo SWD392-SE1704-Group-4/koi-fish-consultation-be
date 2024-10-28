@@ -72,6 +72,15 @@ public class FishPondEntity {
     @JoinColumn(name = "app_user_id", nullable = false) // Foreign key to AppUserEntity
     private AppUserEntity createdBy; // Reference to AppUserEntity
 
+    @ElementCollection
+    @CollectionTable(name = "fish_pond_pictures", joinColumns = @JoinColumn(name = "pond_id"))
+    @Column(name = "pond_picture")
+    private List<String> pondPictures;
+
+    @ManyToOne
+    @JoinColumn(name = "element_id", referencedColumnName = "element_id")
+    private FengshuiElementEntity fengshuiElement;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

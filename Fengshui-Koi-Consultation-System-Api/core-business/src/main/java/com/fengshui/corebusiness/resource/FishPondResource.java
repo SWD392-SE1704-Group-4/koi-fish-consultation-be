@@ -1,6 +1,7 @@
 package com.fengshui.corebusiness.resource;
 
 import com.fengshui.common.services.FishPondService;
+
 import com.fengshui.common.shared.Request.FishPond.*;
 import com.fengshui.common.shared.Request.KoiFish.DeleteKoiFishRequestModel;
 import com.fengshui.common.shared.Request.KoiFish.UpdateKoiFishRequestModel;
@@ -36,11 +37,16 @@ public class FishPondResource {
     public ResponseEntity<GetFishPondResponseModel> getFishPond(@RequestBody GetFishPondRequestModel requestModel) throws Exception {
         return this.fishPondService.getListFishPond(requestModel);
     }
+
     @PreAuthorize("hasRole('Member')")
     @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<UpdateFishPondResponseModel> updateFishPond(@ModelAttribute UpdateFishPondRequestModel requestModel) throws Exception {
         return this.fishPondService.updateFishPond(requestModel);
     }
+
+    @PostMapping(value = "/delete", consumes = {"application/json"})
+    public ResponseEntity<DeleteFishPondResponseModel> deleteKoiFish(@RequestBody DeleteFishPondRequestModel requestModel) throws Exception {
+
     @PreAuthorize("hasRole('Member')")
     @PostMapping(value = "/delete", consumes = {"application/json"})
     public ResponseEntity<DeleteFishPondResponseModel> deleteFishPond(@RequestBody DeleteFishPondRequestModel requestModel) throws Exception {

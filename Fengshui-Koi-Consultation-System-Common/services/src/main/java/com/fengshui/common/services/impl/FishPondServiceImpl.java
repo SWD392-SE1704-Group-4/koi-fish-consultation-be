@@ -1,6 +1,7 @@
 package com.fengshui.common.services.impl;
 
 import com.fengshui.common.aws.S3Client.S3Client;
+
 import com.fengshui.common.repository.postgresql.IAppUserRepository;
 import com.fengshui.common.repository.postgresql.IFengshuiDirectionRepository;
 import com.fengshui.common.repository.postgresql.IFengshuiElementRepository;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
 @Component
 @ComponentScan(basePackages = "com.fengshui.common")
 public class FishPondServiceImpl implements FishPondService {
@@ -38,6 +40,7 @@ public class FishPondServiceImpl implements FishPondService {
     IFishPondRepository fishPondRepository;
 
     @Autowired
+
     IAppUserRepository appUserRepository;
 
     @Autowired
@@ -48,6 +51,7 @@ public class FishPondServiceImpl implements FishPondService {
     public ResponseEntity<CreateFishPondResponseModel> createFishPond(CreateFishPondRequestModel requestModel) {
         CreateFishPondResponseModel response;
         try {
+
             MultipartFile[] fishPondPictures = requestModel.getFishPondPictures();
             List<String> uploadedImageUrls = new ArrayList<>();
             for (MultipartFile picture : fishPondPictures) {
@@ -58,6 +62,7 @@ public class FishPondServiceImpl implements FishPondService {
                     throw new IOException("Failed to upload one or more images.");
                 }
             }
+
             FengshuiDirectionEntity pondDirection = fengshuiDirectionRepository
                     .findById(requestModel.getPondOrientation())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Direction ID"));
@@ -109,6 +114,7 @@ public class FishPondServiceImpl implements FishPondService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
     @Override
     public ResponseEntity<GetFishPondByUserResponseModel> getListFishPondByCreator(GetFishPondByUserRequestModel requestModel) {
         UUID userId = requestModel.getAppUserId();
@@ -129,8 +135,10 @@ public class FishPondServiceImpl implements FishPondService {
     public ResponseEntity<UpdateFishPondResponseModel> updateFishPond(UpdateFishPondRequestModel requestModel) {
         UpdateFishPondResponseModel response;
         try {
+
             FishPondEntity existingFishPond = fishPondRepository.findById(requestModel.getFishPondId())
                     .orElseThrow(() -> new IllegalArgumentException("Fish Pond not found"));
+
 
             if (requestModel.getPondName() != null) {
                 existingFishPond.setPondName(requestModel.getPondName());
@@ -169,11 +177,13 @@ public class FishPondServiceImpl implements FishPondService {
                 existingFishPond.setPondLocation(requestModel.getPondLocation());
             }
             if (requestModel.getPondOrientation() != null) {
+
                 FengshuiDirectionEntity pondDirection = fengshuiDirectionRepository
                         .findById(requestModel.getPondOrientation())
                         .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Direction ID"));
                 existingFishPond.setPondOrientation(pondDirection);
             }
+
 
             List<String> uploadedImageUrls = new ArrayList<>();
             MultipartFile[] fishPondPictures = requestModel.getFishPondPictures();
@@ -184,6 +194,7 @@ public class FishPondServiceImpl implements FishPondService {
                 }
                 existingFishPond.setPondPictures(uploadedImageUrls);
             }
+
 
             // Save the updated fish pond entity
             FishPondEntity updatedFishPond = fishPondRepository.save(existingFishPond);

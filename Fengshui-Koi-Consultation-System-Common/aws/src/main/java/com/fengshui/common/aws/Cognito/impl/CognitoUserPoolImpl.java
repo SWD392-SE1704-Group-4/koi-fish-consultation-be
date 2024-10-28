@@ -4,6 +4,10 @@ import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fengshui.common.aws.Cognito.CognitoUserPool;
 import com.fengshui.common.aws.Cognito.model.CognitoUser;
 import jakarta.annotation.PostConstruct;
@@ -16,11 +20,17 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
+import java.security.PublicKey;
+import java.security.SignatureException;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class CognitoUserPoolImpl implements CognitoUserPool {
+    @Value("${cognitoProperties.jwks}")
+    private String jwksUrl;
 
     @Value("${cognitoProperties.userPoolId}")
     private String userPoolId;
@@ -150,5 +160,21 @@ public class CognitoUserPoolImpl implements CognitoUserPool {
         return response.groups().stream()
                 .map(GroupType::groupName)
                 .collect(Collectors.toList());
+    }
+
+    public PublicKey getPublicKeyFromJwk(String token) throws Exception {
+        String[] tokenParts = token.split("\\.");
+        if (tokenParts.length != 3) {
+            throw new IllegalArgumentException("Invalid JWT token format");
+        }
+        String headerJson = new String(Base64.getUrlDecoder().decode(tokenParts[0]));
+        Map<String, Object> header = new ObjectMapper().readValue(headerJson, Map.class);
+        String kid = (String) header.get("kid");
+        if (kid == null) {
+            throw new IllegalArgumentException("Missing kid in JWT header");
+        }
+        JwkProvider provider = new UrlJwkProvider(jwksUrl);
+        Jwk jwk = provider.get(kid);
+        return jwk.getPublicKey();
     }
 }

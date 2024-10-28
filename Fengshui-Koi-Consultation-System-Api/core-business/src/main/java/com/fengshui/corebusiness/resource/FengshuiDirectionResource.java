@@ -6,6 +6,7 @@ import com.fengshui.common.shared.Response.Direction.GetFengshuiDirectionRespons
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ public class FengshuiDirectionResource {
     @Autowired
     FengshuiDirectionService fengshuiDirectionService;
 
+    @PreAuthorize("hasRole('Member')")
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetFengshuiDirectionResponseModel> getFengshuiElement(@RequestBody GetFengshuiDirectionRequestModel requestModel) throws Exception {
         return this.fengshuiDirectionService.getListFengshuiDirection(requestModel);

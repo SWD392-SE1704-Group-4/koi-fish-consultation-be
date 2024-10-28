@@ -8,4 +8,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface AppUserService {
     public ResponseEntity<GetAppUserGroupResponseModel> getAppUserGroup(GetAppUserGroupRequestModel requestModel);
+
 }

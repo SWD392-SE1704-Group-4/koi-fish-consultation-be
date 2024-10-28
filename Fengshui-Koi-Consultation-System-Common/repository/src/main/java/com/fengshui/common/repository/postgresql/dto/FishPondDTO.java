@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -24,5 +25,7 @@ public class FishPondDTO {
     private Integer numKoiFish;
     private Double waterCapacity;
     private String pondLocation;
+    private List<String> pondPictures;
     private FengshuiDirectionDTO pondOrientation;
+    private AppUserDTO createBy;
 }

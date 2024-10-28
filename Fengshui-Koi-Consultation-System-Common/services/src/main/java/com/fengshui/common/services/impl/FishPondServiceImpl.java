@@ -1,24 +1,19 @@
 package com.fengshui.common.services.impl;
 
 import com.fengshui.common.aws.S3Client.S3Client;
+
+import com.fengshui.common.repository.postgresql.IAppUserRepository;
+import com.fengshui.common.repository.postgresql.IFengshuiDirectionRepository;
 import com.fengshui.common.repository.postgresql.IFengshuiElementRepository;
 import com.fengshui.common.repository.postgresql.IFishPondRepository;
 import com.fengshui.common.repository.postgresql.dto.FishPondDTO;
-import com.fengshui.common.repository.postgresql.entities.FengshuiElementEntity;
-import com.fengshui.common.repository.postgresql.entities.FishPondEntity;
-import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
+import com.fengshui.common.repository.postgresql.entities.*;
 import com.fengshui.common.repository.postgresql.mapper.FishPondMapper;
 import com.fengshui.common.repository.postgresql.mapper.KoiFishMapper;
 import com.fengshui.common.services.FishPondService;
 import com.fengshui.common.shared.Constants.ImageType;
-import com.fengshui.common.shared.Request.FishPond.CreateFishPondRequestModel;
-import com.fengshui.common.shared.Request.FishPond.DeleteFishPondRequestModel;
-import com.fengshui.common.shared.Request.FishPond.GetFishPondRequestModel;
-import com.fengshui.common.shared.Request.FishPond.UpdateFishPondRequestModel;
-import com.fengshui.common.shared.Response.FishPond.CreateFishPondResponseModel;
-import com.fengshui.common.shared.Response.FishPond.DeleteFishPondResponseModel;
-import com.fengshui.common.shared.Response.FishPond.GetFishPondResponseModel;
-import com.fengshui.common.shared.Response.FishPond.UpdateFishPondResponseModel;
+import com.fengshui.common.shared.Request.FishPond.*;
+import com.fengshui.common.shared.Response.FishPond.*;
 import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 @Component
 @ComponentScan(basePackages = "com.fengshui.common")
@@ -43,14 +40,18 @@ public class FishPondServiceImpl implements FishPondService {
     IFishPondRepository fishPondRepository;
 
     @Autowired
-    IFengshuiElementRepository fengshuiElementRepository;
+
+    IAppUserRepository appUserRepository;
+
+    @Autowired
+    IFengshuiDirectionRepository fengshuiDirectionRepository;
 
     @Override
     @Transactional
     public ResponseEntity<CreateFishPondResponseModel> createFishPond(CreateFishPondRequestModel requestModel) {
         CreateFishPondResponseModel response;
         try {
-            // Upload fish pond pictures to S3
+
             MultipartFile[] fishPondPictures = requestModel.getFishPondPictures();
             List<String> uploadedImageUrls = new ArrayList<>();
             for (MultipartFile picture : fishPondPictures) {
@@ -62,12 +63,14 @@ public class FishPondServiceImpl implements FishPondService {
                 }
             }
 
-            // Fetch the Feng Shui element based on the provided fengShuiElementId
-            FengshuiElementEntity fengshuiElement = fengshuiElementRepository
-                    .findById(requestModel.getFengshuiElement())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Element ID"));
+            FengshuiDirectionEntity pondDirection = fengshuiDirectionRepository
+                    .findById(requestModel.getPondOrientation())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Direction ID"));
 
-            // Build the Fish Pond entity
+            AppUserEntity appUser = appUserRepository
+                    .findById(requestModel.getCreatedBy())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid App user ID"));
+
             FishPondEntity fishPond = FishPondEntity.builder()
                     .pondName(requestModel.getPondName())
                     .pondShape(requestModel.getPondShape())
@@ -80,12 +83,10 @@ public class FishPondServiceImpl implements FishPondService {
                     .isSaltwater(requestModel.getIsSaltwater())
                     .numKoiFish(requestModel.getNumKoiFish())
                     .waterCapacity(requestModel.getWaterCapacity())
-//                    .pondElement(requestModel.getPondElement())  // Feng Shui element
                     .pondLocation(requestModel.getPondLocation())
-                    .pondOrientation(requestModel.getPondOrientation())
+                    .pondOrientation(pondDirection)
                     .pondPictures(uploadedImageUrls)
-                    .fengshuiElement(fengshuiElement)
-                    .deleted(false)
+                    .createdBy(appUser)
                     .build();
 
             // Save the Fish Pond entity
@@ -115,15 +116,30 @@ public class FishPondServiceImpl implements FishPondService {
 
 
     @Override
+    public ResponseEntity<GetFishPondByUserResponseModel> getListFishPondByCreator(GetFishPondByUserRequestModel requestModel) {
+        UUID userId = requestModel.getAppUserId();
+
+        List<FishPondDTO> fishPondList = fishPondRepository.findByCreator(userId)
+                .stream()
+                .filter(fishPond -> !fishPond.isDeleted())
+                .map(FishPondMapper::toDTO)
+                .toList();
+
+        GetFishPondByUserResponseModel response = new GetFishPondByUserResponseModel(false, fishPondList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    @Override
     @Transactional
     public ResponseEntity<UpdateFishPondResponseModel> updateFishPond(UpdateFishPondRequestModel requestModel) {
         UpdateFishPondResponseModel response;
         try {
-            // Find existing fish pond
+
             FishPondEntity existingFishPond = fishPondRepository.findById(requestModel.getFishPondId())
                     .orElseThrow(() -> new IllegalArgumentException("Fish Pond not found"));
 
-            // Update fields if they are provided in the request
+
             if (requestModel.getPondName() != null) {
                 existingFishPond.setPondName(requestModel.getPondName());
             }
@@ -161,10 +177,14 @@ public class FishPondServiceImpl implements FishPondService {
                 existingFishPond.setPondLocation(requestModel.getPondLocation());
             }
             if (requestModel.getPondOrientation() != null) {
-                existingFishPond.setPondOrientation(requestModel.getPondOrientation());
+
+                FengshuiDirectionEntity pondDirection = fengshuiDirectionRepository
+                        .findById(requestModel.getPondOrientation())
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Direction ID"));
+                existingFishPond.setPondOrientation(pondDirection);
             }
 
-            // Upload new pictures if provided
+
             List<String> uploadedImageUrls = new ArrayList<>();
             MultipartFile[] fishPondPictures = requestModel.getFishPondPictures();
             if (fishPondPictures != null) {
@@ -175,13 +195,6 @@ public class FishPondServiceImpl implements FishPondService {
                 existingFishPond.setPondPictures(uploadedImageUrls);
             }
 
-            // Set Feng Shui element if provided
-            if (requestModel.getFengshuiElement() != null) {
-                FengshuiElementEntity fengshuiElement = fengshuiElementRepository
-                        .findById(requestModel.getFengshuiElement())
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid Feng Shui Element ID"));
-                existingFishPond.setFengshuiElement(fengshuiElement);
-            }
 
             // Save the updated fish pond entity
             FishPondEntity updatedFishPond = fishPondRepository.save(existingFishPond);

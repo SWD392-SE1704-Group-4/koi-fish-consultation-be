@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 public interface AdvertisementService {
     public ResponseEntity<CreateAdvertisementResponseModel> createAdvertisement(CreateAdvertisementRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(GetListAdvertisementRequestModel requestModel);
+    public ResponseEntity<GetListAdvertisementByCreatorResponseModel> getListAdvertisementByCreator(GetListAdvertisementByCreatorRequestModel requestModel);
     public ResponseEntity<GetAdvertisementByIdResponseModel> getAdvertisementById(GetAdvertisementByIdRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementType(GetListAdvertisementRequestModel requestModel);
     public ResponseEntity<UpdateAdvertisementResponseModel> updateAdvertisement(UpdateAdvertisementRequestModel requestModel);

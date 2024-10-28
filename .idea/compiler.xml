@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -32,19 +33,13 @@
         <module name="repository" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="admin-business" target="17" />
-      <module name="response" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="admin-business" options="-parameters" />
       <module name="aws" options="-parameters" />
       <module name="core-business" options="-parameters" />
       <module name="fengshui-consultation" options="-parameters" />
       <module name="repository" options="-parameters" />
-      <module name="response" options="-parameters" />
       <module name="security" options="-parameters" />
       <module name="services" options="-parameters" />
       <module name="shared" options="-parameters" />

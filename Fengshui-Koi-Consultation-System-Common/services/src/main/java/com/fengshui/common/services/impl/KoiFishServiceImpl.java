@@ -152,7 +152,6 @@ public class KoiFishServiceImpl implements KoiFishService {
 
             existingKoiFish.setKoiFishPictures(requestModel.getKoiFishPictures());
 
-
             if (requestModel.getFengshuiElement() != null) {
                 FengshuiElementEntity fengshuiElement = fengshuiElementRepository
                         .findById(requestModel.getFengshuiElement())

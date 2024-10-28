@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminListGroupsForUserRequest;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements AppUserService {
+public class AppUserServiceImpl implements AppUserService {
 
     @Autowired
     CognitoUserPool cognitoUserPool;

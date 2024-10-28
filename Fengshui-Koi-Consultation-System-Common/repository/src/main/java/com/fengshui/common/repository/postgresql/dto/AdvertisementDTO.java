@@ -16,21 +16,28 @@ public class AdvertisementDTO {
     private UUID advertisementId;
     private String title;
     private String description;
+    private AdvertisementTypeDTO advertisementType;
+
     private String location;
     private String contactInfo;
-    private AdvertisementTypeDTO advertisementType;
-    private int quantity;
-    private int viewsCount;
+    private String phone;
+    private String address;
+
+    private boolean verified;
     private String status;
-    private boolean adminVerified;
-    private LocalDateTime expirationDate;
+
+    private int viewsCount;
+
     private KoiFishDTO koiFish;
-    private String koiFishName;
-    private String postedBy;
-    private Object userInfo;
-    private List<String> additionalImages;
-    private List<String> tags;
+    private FishPondDTO fishPond;
+
+    private AppUserDTO postedBy;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private List<String> additionalImages;
+    private List<String> tags;
+    private LocalDateTime expirationDate;
 }
 

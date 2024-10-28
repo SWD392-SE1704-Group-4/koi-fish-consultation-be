@@ -22,7 +22,7 @@ public class TransactionEntity {
 
     @OneToOne
     @JoinColumn (name = "app_user_id", referencedColumnName = "app_user_id")
-    private AppUser UserId;
+    private AppUserEntity appUser;
 
     @Column (name = "ads_package")
     private String adsPackage;

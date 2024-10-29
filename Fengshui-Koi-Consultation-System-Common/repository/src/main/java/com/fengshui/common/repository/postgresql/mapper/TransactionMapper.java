@@ -2,7 +2,6 @@ package com.fengshui.common.repository.postgresql.mapper;
 
 import com.fengshui.common.repository.postgresql.IAppUserRepository;
 import com.fengshui.common.repository.postgresql.dto.TransactionDTO;
-import com.fengshui.common.repository.postgresql.entities.AppUser;
 import com.fengshui.common.repository.postgresql.entities.AppUserEntity;
 import com.fengshui.common.repository.postgresql.entities.TransactionEntity;
 

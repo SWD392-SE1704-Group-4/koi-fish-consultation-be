@@ -46,6 +46,8 @@ public class FishPondResource {
 
     @PostMapping(value = "/delete", consumes = {"application/json"})
     public ResponseEntity<DeleteFishPondResponseModel> deleteKoiFish(@RequestBody DeleteFishPondRequestModel requestModel) throws Exception {
+        return this.fishPondService.deleteFishPond(requestModel);
+    }
 
     @PreAuthorize("hasRole('Member')")
     @PostMapping(value = "/delete", consumes = {"application/json"})

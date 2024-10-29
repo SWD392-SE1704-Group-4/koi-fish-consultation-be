@@ -29,7 +29,6 @@ public class KoiFishResource {
     @Autowired
     private KoiFishService koiFishService;
 
-
     @PreAuthorize("hasRole('Staff')")
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<CreateKoiFishResponseModel> createKoiFish(@ModelAttribute CreateKoiFishRequestModel requestModel) throws Exception {

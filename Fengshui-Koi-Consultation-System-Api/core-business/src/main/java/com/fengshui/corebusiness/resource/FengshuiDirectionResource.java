@@ -20,7 +20,6 @@ public class FengshuiDirectionResource {
     @Autowired
     FengshuiDirectionService fengshuiDirectionService;
 
-    @PreAuthorize("hasRole('Member')")
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetFengshuiDirectionResponseModel> getFengshuiElement(@RequestBody GetFengshuiDirectionRequestModel requestModel) throws Exception {
         return this.fengshuiDirectionService.getListFengshuiDirection(requestModel);

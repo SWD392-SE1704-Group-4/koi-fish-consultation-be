@@ -26,7 +26,7 @@ public class AdvertisementResource {
     @Autowired
     private AdvertisementService advertisementService;
 
-    @PreAuthorize("hasRole('Member')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<CreateAdvertisementResponseModel> createAdvertisement(@ModelAttribute CreateAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.createAdvertisement(requestModel);
@@ -35,37 +35,41 @@ public class AdvertisementResource {
     public ResponseEntity<GetAdvertisementByIdResponseModel> getAdvertisementById(@RequestBody GetAdvertisementByIdRequestModel requestModel) throws Exception {
         return this.advertisementService.getAdvertisementById(requestModel);
     }
-    @PreAuthorize("hasRole('Member')")
+    @PreAuthorize("hasRole('USER')")
     @PostMapping(value = "/get-list-by-creator", consumes = {"application/json"})
-    public ResponseEntity<GetListAdvertisementByCreatorResponseModel> getListAdvertisement(@RequestBody GetListAdvertisementByCreatorRequestModel requestModel) throws Exception {
+    public ResponseEntity<GetListAdvertisementByCreatorResponseModel> getListAdvertisementByCreator(@RequestBody GetListAdvertisementByCreatorRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisementByCreator(requestModel);
     }
-    @PreAuthorize("hasAnyRole('Member', 'Staff', 'Admin')")
+    @PreAuthorize("hasRole('STAFF')")
+    @PostMapping(value = "/get-list-by-staff", consumes = {"application/json"})
+    public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementByStaff(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
+        return this.advertisementService.getListAdvertisementByStaff(requestModel);
+    }
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisement(requestModel);
     }
-    @PreAuthorize("hasAnyRole('Member', 'Staff', 'Admin')")
+    @PreAuthorize("hasAnyRole('USER', 'STAFF', 'ADMIN')")
     @PostMapping(value = "/get-list-advertisement-type", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementType(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisementType(requestModel);
     }
-    @PreAuthorize("hasAnyRole('Member')")
+    @PreAuthorize("hasAnyRole('USER')")
     @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<UpdateAdvertisementResponseModel> updateAdvertisement(@ModelAttribute UpdateAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.updateAdvertisement(requestModel);
     }
-    @PreAuthorize("hasAnyRole('Staff')")
+    @PreAuthorize("hasAnyRole('STAFF')")
     @PostMapping(value = "/delete", consumes = {"application/json"})
     public ResponseEntity<DeleteAdvertisementResponseModel> deleteAdvertisement(@RequestBody DeleteAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.deleteAdvertisement(requestModel);
     }
-    @PreAuthorize("hasAnyRole('Staff')")
+    @PreAuthorize("hasAnyRole('STAFF')")
     @PostMapping("/approve")
     public ResponseEntity<VerifyAdvertisementResponseModel> approveAdvertisement(@RequestBody VerifyAdvertisementRequestModel requestModel) {
         return this.advertisementService.verifyAdvertisement(requestModel);
     }
-    @PreAuthorize("hasAnyRole('Staff')")
+    @PreAuthorize("hasAnyRole('STAFF')")
     @PostMapping("/deny")
     public ResponseEntity<DenyAdvertisementResponseModel> denyAdvertisement(@RequestBody DenyAdvertisementRequestModel requestModel) {
         return this.advertisementService.denyAdvertisement(requestModel);

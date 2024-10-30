@@ -20,6 +20,8 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.PublicKey;
 import java.security.SignatureException;
 import java.util.Base64;
@@ -57,7 +59,17 @@ public class CognitoUserPoolImpl implements CognitoUserPool {
                 .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                 .build();
     }
-
+    private String calculateSecretHash(String clientId, String clientSecret, String username) {
+        try {
+            Mac mac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secretKey = new SecretKeySpec(clientSecret.getBytes("UTF-8"), "HmacSHA256");
+            mac.init(secretKey);
+            byte[] hmac = mac.doFinal((username + clientId).getBytes("UTF-8"));
+            return Base64.getEncoder().encodeToString(hmac);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while calculating SECRET_HASH", e);
+        }
+    }
 
     @Override
     public SignUpResponse signUp(String username, String password, String email, String phoneNumber, String firstName, String lastName) {
@@ -160,6 +172,22 @@ public class CognitoUserPoolImpl implements CognitoUserPool {
         return response.groups().stream()
                 .map(GroupType::groupName)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public AdminInitiateAuthResponse loginAppUser(String email, String password) {
+        String secretHash = calculateSecretHash(clientId, clientSecret, email);
+        AdminInitiateAuthRequest authRequest = AdminInitiateAuthRequest.builder()
+                .userPoolId(userPoolId)
+                .clientId(clientId)
+                .authFlow(AuthFlowType.ADMIN_NO_SRP_AUTH)
+                .authParameters(Map.of(
+                        "USERNAME", email,
+                        "PASSWORD", password,
+                        "SECRET_HASH", secretHash  // Thêm SECRET_HASH vào authParameters
+                ))
+                .build();
+
+        return cognitoClient.adminInitiateAuth(authRequest);
     }
 
     public PublicKey getPublicKeyFromJwk(String token) throws Exception {

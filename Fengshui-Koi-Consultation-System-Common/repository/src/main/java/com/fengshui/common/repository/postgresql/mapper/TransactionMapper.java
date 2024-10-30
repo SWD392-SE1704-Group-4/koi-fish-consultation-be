@@ -24,23 +24,29 @@ public class TransactionMapper {
                 .price(entity.getPrice())
                 .build();
     }
+    return TransactionDTO.builder()
+            .id(entity.getId())
+            .createdAt(LocalDateTime.parse(entity.getCreatedAt().toString()))
+            .appUser(entity.getAppUser().getId())
+            .adsPackage(entity.getAdsPackage())
+            .price(entity.getPrice())
+            .build();
+}
 
 
-    public static TransationEntity toEntity(TransactionDTO dto) {
-        if (dto == null) return null;
-        public static TransactionEntity toEntity(TransactionDTO dto, IAppUserRepository appUserRepository) {
-            if (dto == null) {
-                return null;
-            }
-            AppUserEntity getAppUser = appUserRepository.findById(dto.getAppUser())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            return TransactionEntity.builder()
-                    .Id(dto.getId())
-                    .createdAt(dto.getCreatedAt())
-                    .appUser(getAppUser)
-                    .adsPackage(dto.getAdsPackage())
-                    .price(dto.getPrice())
-                    .build();
-        }
+public static TransactionEntity toEntity(TransactionDTO dto, IAppUserRepository appUserRepository) {
+    if (dto == null) {
+        return null;
     }
+    AppUserEntity getAppUser = appUserRepository.findById(dto.getAppUser())
+            .orElseThrow(() -> new RuntimeException("User not found"));
+
+    return TransactionEntity.builder()
+            .Id(dto.getId())
+            .createdAt(dto.getCreatedAt())
+            .appUser(getAppUser)
+            .adsPackage(dto.getAdsPackage())
+            .price(dto.getPrice())
+            .build();
+    }
+}

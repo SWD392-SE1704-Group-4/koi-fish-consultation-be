@@ -1,5 +1,6 @@
 package com.fengshui.common.repository.postgresql.dto;
 
+import com.fengshui.common.repository.postgresql.entities.AppUser;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,8 +14,10 @@ import java.util.UUID;
 public class TransactionDTO {
     private UUID id;
     private LocalDateTime createdAt;
-    private String userId;
+    private UUID appUser;
     private String adsPackage;
     private double price;
- //   private boolean deleted;
+
+
+    //   private boolean deleted;
 }

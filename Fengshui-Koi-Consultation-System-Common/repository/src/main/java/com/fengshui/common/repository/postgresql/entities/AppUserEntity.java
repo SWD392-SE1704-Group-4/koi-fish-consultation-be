@@ -62,7 +62,7 @@ public class AppUserEntity {
     private AppUserStatus status;
 
     @Enumerated(EnumType.ORDINAL)
-    private AppUserRole role;
+    private AppUserRole role = AppUserRole.USER;
 
     @Column(name = "last_login")
     private LocalDate lastLogin;
@@ -87,7 +87,10 @@ public class AppUserEntity {
         this.updatedAt = LocalDateTime.now();
         this.emailVerified = false;
         this.phoneNumberVerified = false;
-        this.role = AppUserRole.USER;
+
+        if (this.role == null) {
+            this.role = AppUserRole.values()[0];
+        }
     }
 
     @PreUpdate

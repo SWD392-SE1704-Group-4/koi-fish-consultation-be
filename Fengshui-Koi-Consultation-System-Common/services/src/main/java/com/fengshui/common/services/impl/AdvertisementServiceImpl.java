@@ -119,6 +119,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         GetListAdvertisementResponseModel response;
         List<AdvertisementDTO> advertisementList = this.advertisementRepository.findAll()
                 .stream()
+                .filter(advertisement -> !advertisement.isDeleted() && advertisement.isVerified())
+                .map(AdvertisementMapper::toDTO)
+                .toList();
+        response = new GetListAdvertisementResponseModel(false, advertisementList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementByStaff(GetListAdvertisementRequestModel requestModel) {
+        GetListAdvertisementResponseModel response;
+        List<AdvertisementDTO> advertisementList = this.advertisementRepository.findAll()
+                .stream()
                 .filter(advertisement -> !advertisement.isDeleted())
                 .map(AdvertisementMapper::toDTO)
                 .toList();

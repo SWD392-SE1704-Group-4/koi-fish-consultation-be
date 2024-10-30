@@ -34,6 +34,12 @@ public class SecurityConfig{
                 .authorizeHttpRequests(req -> req
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers("/public/**").permitAll() // Adjust public endpoints as necessary
+                        .requestMatchers("/api/v1/koi-fish/**").permitAll()
+                        .requestMatchers("/api/v1/advertisement/get-list").permitAll()
+                        .requestMatchers("/api/fengshui/**").permitAll()
+                        .requestMatchers("/api/v1/app-user/**").permitAll()
+                        .requestMatchers("api/v1/fengshui-direction/**").permitAll()
+                        .requestMatchers("api/v1/fengshui-element/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

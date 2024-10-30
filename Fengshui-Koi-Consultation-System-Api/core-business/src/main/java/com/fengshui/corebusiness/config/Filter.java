@@ -2,6 +2,10 @@ package com.fengshui.corebusiness.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
+import com.fengshui.common.repository.postgresql.IAppUserRepository;
+import com.fengshui.common.repository.postgresql.dto.AppUserDTO;
+import com.fengshui.common.repository.postgresql.entities.AppUserEntity;
+import com.fengshui.common.repository.postgresql.enums.AppUserRole;
 import com.fengshui.common.security.JwtService;
 import com.fengshui.common.services.AppUserService;
 import io.jsonwebtoken.Claims;
@@ -23,6 +27,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,34 +38,37 @@ public class Filter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private AppUserService appUserService;
+    private IAppUserRepository appUserRepository;
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = null;
         String authHeader = request.getHeader("Authorization");
         String uri = request.getRequestURI();
+        if (uri.contains("/login")) {
+            filterChain.doFilter(request,response);
+            return;
+        }
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             Claims userClaims = jwtService.decodeJwt(token);
-            // Extract groups from userClaims
-            List<String> groups = userClaims.get("cognito:groups", List.class);
-            if (groups != null && !groups.isEmpty()) {
-                // Convert each group to a SimpleGrantedAuthority, e.g., "ROLE_Member"
-                List<SimpleGrantedAuthority> authorities = groups.stream()
-                        .map(group -> new SimpleGrantedAuthority("ROLE_" + group))
-                        .collect(Collectors.toList());
 
-                // Create an authentication token with the extracted roles
+            UUID sub = UUID.fromString(userClaims.get("sub", String.class));
+            Optional<AppUserEntity> appUserOptional = appUserRepository.findById(sub);
+
+            if (appUserOptional.isPresent()) {
+                AppUserEntity appUser = appUserOptional.get();
+
+                AppUserRole roleName = appUser.getRole();  // Adjust if necessary
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roleName);
+
                 UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userClaims.getSubject(), null, authorities);
+                        new UsernamePasswordAuthenticationToken(sub, null, List.of(authority));
 
-                // Set the authentication token in the security context
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
             }
-
         }
-
         filterChain.doFilter(request, response);
     }
 }

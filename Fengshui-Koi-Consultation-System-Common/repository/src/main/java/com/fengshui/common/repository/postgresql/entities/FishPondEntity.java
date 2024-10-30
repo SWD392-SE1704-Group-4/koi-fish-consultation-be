@@ -59,13 +59,19 @@ public class FishPondEntity {
     @Column(name = "pond_location", length = 50)
     private String pondLocation;  // Indoor or outdoor
 
-    @Column(name = "pond_orientation", length = 50)
-    private String pondOrientation; // Direction the pond is facing (based on Feng Shui)
+    @ManyToOne
+    @JoinColumn(name = "pond_orientation_id", referencedColumnName = "direction_id")
+    private FengshuiDirectionEntity pondOrientation;
 
     @ElementCollection
     @CollectionTable(name = "fish_pond_pictures", joinColumns = @JoinColumn(name = "pond_id"))
     @Column(name = "pond_picture")
     private List<String> pondPictures;
+
+    @ManyToOne
+    @JoinColumn(name = "app_user_id", nullable = false) // Foreign key to AppUserEntity
+    private AppUserEntity createdBy; // Reference to AppUserEntity
+
 
     @ManyToOne
     @JoinColumn(name = "element_id", referencedColumnName = "element_id")
@@ -79,6 +85,9 @@ public class FishPondEntity {
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted;
+
+    @OneToMany(mappedBy = "fishPond")
+    private List<AdvertisementEntity> advertisementList;
 
     // Automatically set the createdAt and updatedAt values
     @PrePersist

@@ -14,6 +14,15 @@ public class TransactionMapper {
     }
     public static TransactionDTO toDTO(TransactionEntity entity){
         if (entity == null) {return null;
+        }
+        return TransactionDTO.builder()
+                .id(entity.getId())
+                .createdAt(LocalDateTime.parse(entity.getCreatedAt().toString()))
+                .userId(entity.getUserId())
+                .appUser(entity.getAppUser().getId())
+                .adsPackage(entity.getAdsPackage())
+                .price(entity.getPrice())
+                .build();
     }
     return TransactionDTO.builder()
             .id(entity.getId())

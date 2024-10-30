@@ -11,10 +11,13 @@ import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
 import com.fengshui.common.shared.Response.KoiFish.GetKoiFishResponseModel;
 import com.fengshui.common.shared.Response.KoiFish.UpdateKoiFishResponseModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface AdvertisementService {
     public ResponseEntity<CreateAdvertisementResponseModel> createAdvertisement(CreateAdvertisementRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(GetListAdvertisementRequestModel requestModel);
+    public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementByStaff(GetListAdvertisementRequestModel requestModel);
+    public ResponseEntity<GetListAdvertisementByCreatorResponseModel> getListAdvertisementByCreator(GetListAdvertisementByCreatorRequestModel requestModel);
     public ResponseEntity<GetAdvertisementByIdResponseModel> getAdvertisementById(GetAdvertisementByIdRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementType(GetListAdvertisementRequestModel requestModel);
     public ResponseEntity<UpdateAdvertisementResponseModel> updateAdvertisement(UpdateAdvertisementRequestModel requestModel);

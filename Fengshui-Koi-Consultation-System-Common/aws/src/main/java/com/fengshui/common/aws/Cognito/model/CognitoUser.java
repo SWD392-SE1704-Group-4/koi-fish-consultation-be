@@ -22,5 +22,4 @@ public class CognitoUser {
     private String status;
     private String accessToken;
     private String refreshToken;
-
 }

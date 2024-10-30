@@ -17,7 +17,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "advertisement")
 public class AdvertisementEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "advertisement_id", updatable = false, nullable = false)
@@ -39,33 +38,25 @@ public class AdvertisementEntity {
     @Column(name = "contact_info")
     private String contactInfo;
 
-    @ManyToOne
-    @JoinColumn(name = "koi_fish_id", referencedColumnName = "koi_fish_id")
-    private KoiFishEntity koiFish;
-
-    @Column(name = "quantity")
-    private int quantity;
-
-    @Column(name = "views_count")
-    private int viewsCount;
-
-    @Column(name = "status")
-    private AdvertisementStatus status;
-
-    @Column(name = "admin_verified")
-    private boolean adminVerified;
-
-    @Column(name = "expiration_date")
-    private LocalDateTime expirationDate;
-
-    @Column(name = "posted_by")
-    private String postedBy;
-
     @Column(name = "phone")
     private String phone;
 
     @Column(name = "address")
     private String address;
+
+    @ManyToOne
+    @JoinColumn(name = "koi_fish_id", referencedColumnName = "koi_fish_id")
+    private KoiFishEntity koiFish;
+
+    @ManyToOne
+    @JoinColumn(name = "pond_id", referencedColumnName = "pond_id")
+    private FishPondEntity fishPond;
+
+    @Column(name = "views_count")
+    private int viewsCount;
+
+    @Enumerated(EnumType.ORDINAL)
+    private AdvertisementStatus status;
 
     @ElementCollection
     @CollectionTable(name = "advertisement_images", joinColumns = @JoinColumn(name = "advertisement_id"))
@@ -83,8 +74,19 @@ public class AdvertisementEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "verified")
+    private boolean verified;
+
     @Column(name = "deleted")
     private boolean deleted;
+
+    // Relationship with AppUserEntity
+    @ManyToOne
+    @JoinColumn(name = "app_user_id", nullable = false)
+    private AppUserEntity postedBy;
+
+    @Column(name = "expiration_date")
+    private LocalDateTime expirationDate;
 
     @PrePersist
     protected void onCreate() {
@@ -92,7 +94,8 @@ public class AdvertisementEntity {
         this.updatedAt = LocalDateTime.now();
         this.viewsCount = 0;
         this.deleted = false;
-        this.adminVerified = false;
+        this.verified = false;
+        this.status = AdvertisementStatus.WAITING_APPROVE;
     }
 
     @PreUpdate

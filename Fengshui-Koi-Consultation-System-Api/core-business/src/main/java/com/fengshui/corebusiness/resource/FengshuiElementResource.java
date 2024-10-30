@@ -27,4 +27,5 @@ public class FengshuiElementResource {
     public ResponseEntity<GetFengshuiElementResponseModel> getFengshuiElement(@RequestBody GetFengshuiElementRequestModel requestModel) throws Exception {
         return this.fengshuiElementService.getListFengshuiElement(requestModel);
     }
+
 }

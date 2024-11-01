@@ -8,6 +8,7 @@ import com.fengshui.common.shared.Response.AdvertisementPackage.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,11 +19,12 @@ public class AdvertisementPackageResource {
     @Autowired
     private AdvertisementPackageService advertisementPackageService;
 
+    @PreAuthorize("hasAnyRole('USER')")
     @PostMapping(path = "/create", consumes = {"application/json"})
     public ResponseEntity<CreateAdvertisementPackageResponseModel> createAdvertisementPackage(@ModelAttribute CreateAdvertisementPackageRequestModel requestModel) throws Exception {
         return this.advertisementPackageService.createAdvertisementPackage(requestModel);
     }
-
+    @PreAuthorize("hasAnyAuthority('USER', 'STAFF', 'ADMIN')")
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementPackageResponseModel> getListAdvertisementPackage(@RequestBody GetListAdvertisementPackageRequestModel requestModel) throws Exception {
         return this.advertisementPackageService.getListAdvertisementPackage(requestModel);

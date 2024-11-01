@@ -29,7 +29,7 @@ public class KoiFishResource {
     @Autowired
     private KoiFishService koiFishService;
 
-    @PreAuthorize("hasAnyRole('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<CreateKoiFishResponseModel> createKoiFish(@ModelAttribute CreateKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.createKoiFish(requestModel);
@@ -40,13 +40,13 @@ public class KoiFishResource {
         return this.koiFishService.getListKoiFish(requestModel);
     }
 
-    @PreAuthorize("hasAnyRole('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<UpdateKoiFishResponseModel> updateKoiFish(@ModelAttribute UpdateKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.updateKoiFish(requestModel);
     }
 
-    @PreAuthorize("hasAnyRole('STAFF')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     @PostMapping(value = "/delete", consumes = {"application/json"})
     public ResponseEntity<DeleteKoiFishResponseModel> deleteKoiFish(@RequestBody DeleteKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.deleteKoiFish(requestModel);

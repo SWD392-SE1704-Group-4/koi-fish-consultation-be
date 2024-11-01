@@ -69,8 +69,10 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                     }
                 }
             }
+
             KoiFishEntity koiFish = null;
             FishPondEntity fishPond = null;
+
             if(requestModel.getKoiFishId() != null){
                 koiFish = koiFishRepository
                         .findById(requestModel.getKoiFishId())
@@ -97,6 +99,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                     .description(requestModel.getDescription())
                     .koiFish(koiFish)
                     .fishPond(fishPond)
+                    .price(requestModel.getPrice())
                     .postedBy(appUser)
                     .additionalImages(uploadedImageUrls)
                     .location(requestModel.getLocation())
@@ -164,11 +167,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
 
         AdvertisementEntity advertisement = optionalAdvertisement.get();
-        AdvertisementDTO dto = AdvertisementMapper.toDTO(advertisement);
 
+        // Increment the view count
+        advertisement.setViewsCount(advertisement.getViewsCount() + 1);
+        this.advertisementRepository.save(advertisement); // Save updated entity
+
+        AdvertisementDTO dto = AdvertisementMapper.toDTO(advertisement);
         response = new GetAdvertisementByIdResponseModel(false, dto, null);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
     @Override
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementType(GetListAdvertisementRequestModel requestModel) {

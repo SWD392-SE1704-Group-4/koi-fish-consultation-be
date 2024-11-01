@@ -26,6 +26,7 @@ public class AdvertisementMapper {
                 .expirationDate(entity.getExpirationDate())
                 .koiFish(KoiFishMapper.toDTO(entity.getKoiFish()))
                 .fishPond(FishPondMapper.toDTO(entity.getFishPond()))
+                .price(entity.getPrice())
                 .additionalImages(entity.getAdditionalImages())
                 .tags(entity.getTags())
                 .postedBy(AppUserMapper.toDTO(entity.getPostedBy()))

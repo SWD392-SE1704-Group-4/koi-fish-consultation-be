@@ -21,29 +21,31 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig{
+public class SecurityConfig {
 
     @Autowired
     Filter filter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-        http
+        return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(req -> req
-                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers("/public/**").permitAll() // Adjust public endpoints as necessary
-                        .requestMatchers("/api/v1/koi-fish/**").permitAll()
-                        .requestMatchers("/api/v1/advertisement/get-list").permitAll()
-                        .requestMatchers("/api/fengshui/**").permitAll()
-                        .requestMatchers("/api/v1/app-user/**").permitAll()
-                        .requestMatchers("api/v1/fengshui-direction/**").permitAll()
-                        .requestMatchers("api/v1/fengshui-element/**").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+//                        .requestMatchers("/api/v1/**").permitAll() // Adjust public endpoints as necessary
+//                        .requestMatchers("/api/v1/koi-fish/**").permitAll()
+//                        .requestMatchers("/api/v1/advertisement/get-list").permitAll()
+//                        .requestMatchers("/api/v1/advertisement/get-list-advertisement-type").permitAll()
+//                        .requestMatchers("/api/fengshui/**").permitAll()
+//                        .requestMatchers("/api/v1/app-user/**").permitAll()
+//                        .requestMatchers("api/v1/fengshui-direction/**").permitAll()
+//                        .requestMatchers("api/v1/fengshui-element/**").permitAll()
+                                .requestMatchers("/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
                 )
-                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
 }

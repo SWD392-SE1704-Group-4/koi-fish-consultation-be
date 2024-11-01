@@ -46,10 +46,20 @@ public class Filter extends OncePerRequestFilter {
         String token = null;
         String authHeader = request.getHeader("Authorization");
         String uri = request.getRequestURI();
-        if (uri.contains("/login")) {
-            filterChain.doFilter(request,response);
-            return;
-        }
+
+//        if (
+//                uri.contains("/login") ||
+//                        uri.contains("/fengshui-direction") ||
+//                        uri.contains("/fengshui-element") ||
+//                        uri.contains("/advertisement/get-list") ||
+//                        uri.contains("/fengshui") ||
+//                        uri.contains("/heavenly-earthly-elements") ||
+//                        uri.contains("/koi-fish/get-list")) {
+//
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             Claims userClaims = jwtService.decodeJwt(token);
@@ -60,8 +70,8 @@ public class Filter extends OncePerRequestFilter {
             if (appUserOptional.isPresent()) {
                 AppUserEntity appUser = appUserOptional.get();
 
-                AppUserRole roleName = appUser.getRole();  // Adjust if necessary
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roleName);
+                String roleName = appUser.getRole().name();  // Adjust if necessary
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority(roleName);
 
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(sub, null, List.of(authority));

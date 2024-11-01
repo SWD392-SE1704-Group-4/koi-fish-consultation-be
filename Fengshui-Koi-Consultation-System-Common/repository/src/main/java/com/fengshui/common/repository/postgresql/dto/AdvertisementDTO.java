@@ -25,11 +25,13 @@ public class AdvertisementDTO {
 
     private boolean verified;
     private String status;
+    private String deniedReason;
 
     private int viewsCount;
 
     private KoiFishDTO koiFish;
     private FishPondDTO fishPond;
+    private double price;
 
     private AppUserDTO postedBy;
 

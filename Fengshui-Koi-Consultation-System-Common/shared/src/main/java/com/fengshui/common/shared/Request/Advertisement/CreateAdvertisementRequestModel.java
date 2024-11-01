@@ -17,6 +17,7 @@ public class CreateAdvertisementRequestModel {
 
     private UUID fishPondId;
     private UUID koiFishId;
+    private double price;
 
     private List<String> tags;
 

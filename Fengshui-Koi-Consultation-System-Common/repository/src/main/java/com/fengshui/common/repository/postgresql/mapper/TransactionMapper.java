@@ -9,44 +9,39 @@ import java.time.LocalDateTime;
 
 public class TransactionMapper {
     private final IAppUserRepository appUserRepository;
+
     public TransactionMapper(IAppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
     }
-    public static TransactionDTO toDTO(TransactionEntity entity){
-        if (entity == null) {return null;
+
+    public static TransactionDTO toDTO(TransactionEntity entity) {
+        if (entity == null) {
+            return null;
         }
         return TransactionDTO.builder()
                 .id(entity.getId())
                 .createdAt(LocalDateTime.parse(entity.getCreatedAt().toString()))
-                .userId(entity.getUserId())
                 .appUser(entity.getAppUser().getId())
                 .adsPackage(entity.getAdsPackage())
                 .price(entity.getPrice())
                 .build();
     }
-    return TransactionDTO.builder()
-            .id(entity.getId())
-            .createdAt(LocalDateTime.parse(entity.getCreatedAt().toString()))
-            .appUser(entity.getAppUser().getId())
-            .adsPackage(entity.getAdsPackage())
-            .price(entity.getPrice())
-            .build();
-}
 
 
-public static TransactionEntity toEntity(TransactionDTO dto, IAppUserRepository appUserRepository) {
-    if (dto == null) {
-        return null;
-    }
-    AppUserEntity getAppUser = appUserRepository.findById(dto.getAppUser())
-            .orElseThrow(() -> new RuntimeException("User not found"));
 
-    return TransactionEntity.builder()
-            .Id(dto.getId())
-            .createdAt(dto.getCreatedAt())
-            .appUser(getAppUser)
-            .adsPackage(dto.getAdsPackage())
-            .price(dto.getPrice())
-            .build();
+    public static TransactionEntity toEntity(TransactionDTO dto, IAppUserRepository appUserRepository) {
+        if (dto == null) {
+            return null;
+        }
+        AppUserEntity getAppUser = appUserRepository.findById(dto.getAppUser())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return TransactionEntity.builder()
+                .Id(dto.getId())
+                .createdAt(dto.getCreatedAt())
+                .appUser(getAppUser)
+                .adsPackage(dto.getAdsPackage())
+                .price(dto.getPrice())
+                .build();
     }
 }

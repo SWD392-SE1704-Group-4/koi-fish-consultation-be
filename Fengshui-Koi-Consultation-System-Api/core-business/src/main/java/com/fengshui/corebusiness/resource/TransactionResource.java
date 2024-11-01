@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping
 @ComponentScan(basePackages = "com.fengshui.common.services")
-
 public class TransactionResource {
     @Autowired
     private TransactionService transactionService;

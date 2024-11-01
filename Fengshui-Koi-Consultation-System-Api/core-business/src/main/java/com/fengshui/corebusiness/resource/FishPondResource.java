@@ -22,12 +22,12 @@ public class FishPondResource {
     @Autowired
     private FishPondService fishPondService;
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyAuthority('USER')")
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     public ResponseEntity<CreateFishPondResponseModel> createFishPond(@ModelAttribute CreateFishPondRequestModel requestModel) throws Exception {
         return this.fishPondService.createFishPond(requestModel);
     }
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyAuthority('USER')")
     @PostMapping(value = "/get-list-by-creator", consumes = {"application/json"})
     public ResponseEntity<GetFishPondByUserResponseModel> getFishPondByCreator(@RequestBody GetFishPondByUserRequestModel requestModel) throws Exception {
         return this.fishPondService.getListFishPondByCreator(requestModel);
@@ -38,14 +38,14 @@ public class FishPondResource {
         return this.fishPondService.getListFishPond(requestModel);
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyAuthority('USER')")
     @PostMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<UpdateFishPondResponseModel> updateFishPond(@ModelAttribute UpdateFishPondRequestModel requestModel) throws Exception {
         return this.fishPondService.updateFishPond(requestModel);
     }
 
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyAuthority('USER')")
     @PostMapping(value = "/delete", consumes = {"application/json"})
     public ResponseEntity<DeleteFishPondResponseModel> deleteFishPond(@RequestBody DeleteFishPondRequestModel requestModel) throws Exception {
         return this.fishPondService.deleteFishPond(requestModel);

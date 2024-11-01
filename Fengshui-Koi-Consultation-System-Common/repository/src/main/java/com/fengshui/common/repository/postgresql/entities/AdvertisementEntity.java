@@ -77,6 +77,12 @@ public class AdvertisementEntity {
     @Column(name = "verified")
     private boolean verified;
 
+    @Column(name = "price")
+    private double price;
+
+    @Column(name = "denied_reason")
+    private String deniedReason;
+
     @Column(name = "deleted")
     private boolean deleted;
 

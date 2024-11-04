@@ -4,8 +4,10 @@ import com.fengshui.common.repository.postgresql.entities.FengshuiDirectionEntit
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface IFengshuiDirectionRepository extends JpaRepository<FengshuiDirectionEntity, UUID> {
+    List<FengshuiDirectionEntity> findByElementAssociation(String elementAssociation);
 }

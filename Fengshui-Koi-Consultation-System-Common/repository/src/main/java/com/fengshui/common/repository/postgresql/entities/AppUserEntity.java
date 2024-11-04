@@ -75,6 +75,16 @@ public class AppUserEntity {
     @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FishPondEntity> fishPonds = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "current_package_id")
+    private AdvertisementPackageEntity currentPackage;
+
+    @Column(name = "remaining_ads")
+    private Integer remainingAds;
+
+    @Column(name = "package_expiry_date")
+    private LocalDate packageExpiryDate;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
@@ -92,6 +102,27 @@ public class AppUserEntity {
             this.role = AppUserRole.values()[0];
         }
     }
+    public void upgradePackage(AdvertisementPackageEntity newPackage) {
+        this.currentPackage = newPackage;
+        this.remainingAds += newPackage.getMaxAds();
+        this.packageExpiryDate = LocalDate.now().plusDays(newPackage.getDurationInDays());
+    }
+
+    // Method to decrement remaining ad slots
+    public boolean canPostAd() {
+        return this.remainingAds > 0 && (packageExpiryDate == null || LocalDate.now().isBefore(packageExpiryDate));
+    }
+
+    public void decrementAdCount() {
+        if (canPostAd()) {
+            this.remainingAds--;
+        } else {
+            throw new IllegalStateException("No remaining ads or package expired");
+        }
+    }
+
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private PersonalFengshuiEntity personalFengshui;
 
     @PreUpdate
     protected void onUpdate() {

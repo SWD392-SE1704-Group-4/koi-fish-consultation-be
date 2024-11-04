@@ -25,6 +25,9 @@ public class AppUserMapper {
                 .profilePictureUrl(entity.getProfilePictureUrl())
                 .status(entity.getStatus())
                 .role(entity.getRole())
+                .currentPackage(AdvertisementPackageMapper.toDTO(entity.getCurrentPackage()))
+                .remainingAds(entity.getRemainingAds())
+                .packageExpiryDate(entity.getPackageExpiryDate())
                 .lastLogin(entity.getLastLogin())
                 .build();
     }

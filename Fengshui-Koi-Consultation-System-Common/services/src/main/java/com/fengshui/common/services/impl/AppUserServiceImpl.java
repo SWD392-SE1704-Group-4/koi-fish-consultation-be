@@ -2,15 +2,20 @@ package com.fengshui.common.services.impl;
 
 import com.fengshui.common.aws.Cognito.CognitoUserPool;
 import com.fengshui.common.repository.postgresql.IAppUserRepository;
+import com.fengshui.common.repository.postgresql.dto.AdvertisementPackageDTO;
 import com.fengshui.common.repository.postgresql.dto.AppUserDTO;
 import com.fengshui.common.repository.postgresql.dto.AppUserLoginDTO;
+import com.fengshui.common.repository.postgresql.entities.AdvertisementPackageEntity;
 import com.fengshui.common.repository.postgresql.entities.AppUserEntity;
+import com.fengshui.common.repository.postgresql.mapper.AdvertisementPackageMapper;
 import com.fengshui.common.repository.postgresql.mapper.AppUserMapper;
 import com.fengshui.common.services.AppUserService;
+import com.fengshui.common.shared.Request.AdsPackage.GetPackageByUserIdRequestModel;
 import com.fengshui.common.shared.Request.AppUser.AppUserLoginResponseModel;
 import com.fengshui.common.shared.Request.AppUser.GetAppUserByIdRequestModel;
 import com.fengshui.common.shared.Request.AppUser.GetAppUserGroupRequestModel;
 import com.fengshui.common.shared.Request.AppUser.GetAppUserRoleRequestModel;
+import com.fengshui.common.shared.Response.AdsPackage.GetPackageByUserIdResponseModel;
 import com.fengshui.common.shared.Response.AppUser.AppUserLoginRequestModel;
 import com.fengshui.common.shared.Response.AppUser.GetAppUserByIdResponseModel;
 import com.fengshui.common.shared.Response.AppUser.GetAppUserGroupResponseModel;
@@ -76,6 +81,30 @@ public class AppUserServiceImpl implements AppUserService {
         AppUserDTO dto = AppUserMapper.toDTO(appUser);
 
         response = new GetAppUserByIdResponseModel(false, dto, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    public ResponseEntity<GetPackageByUserIdResponseModel> getAppUserPackage(GetPackageByUserIdRequestModel requestModel) {
+        GetPackageByUserIdResponseModel response;
+
+        Optional<AppUserEntity> optionalUser = this.appUserRepository.findById(requestModel.getAppUserId());
+        if (optionalUser.isEmpty()) {
+            response = new GetPackageByUserIdResponseModel(true, null, "User not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        AppUserEntity appUser = optionalUser.get();
+        AdvertisementPackageEntity currentPackage = appUser.getCurrentPackage();
+
+        if (currentPackage == null) {
+            response = new GetPackageByUserIdResponseModel(true, null, "No active package for user.");
+            return ResponseEntity.status(HttpStatus.OK).body(response);  // or HttpStatus.NOT_FOUND if preferred
+        }
+
+        AdvertisementPackageDTO packageDTO = AdvertisementPackageMapper.toDTO(currentPackage);
+
+        response = new GetPackageByUserIdResponseModel(false, packageDTO, null);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

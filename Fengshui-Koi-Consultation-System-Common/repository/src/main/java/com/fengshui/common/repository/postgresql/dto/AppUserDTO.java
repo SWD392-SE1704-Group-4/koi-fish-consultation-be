@@ -32,4 +32,8 @@ public class AppUserDTO {
     private LocalDate lastLogin;
     private List<AdvertisementDTO> advertisements;
     private List<FishPondDTO> fishPonds;
+
+    private AdvertisementPackageDTO currentPackage;
+    private Integer remainingAds;
+    private LocalDate packageExpiryDate;
 }

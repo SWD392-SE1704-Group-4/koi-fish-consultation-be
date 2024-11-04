@@ -1,5 +1,6 @@
 package com.fengshui.common.repository.postgresql.entities;
 
+import com.fengshui.common.repository.postgresql.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,6 +37,8 @@ public class PaymentEntity {
 
     private String paymentLinkId;
 
+    private PaymentStatus status;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -44,6 +47,11 @@ public class PaymentEntity {
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
+
+    // Many-to-One relationship with AdvertisementPackageEntity
+    @ManyToOne
+    @JoinColumn(name = "package_id", referencedColumnName = "package_id")
+    private AdvertisementPackageEntity advertisementPackage;
 
     @PrePersist
     protected void onCreate() {

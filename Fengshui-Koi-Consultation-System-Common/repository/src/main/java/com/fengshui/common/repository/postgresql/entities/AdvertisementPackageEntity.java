@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -44,6 +46,14 @@ public class AdvertisementPackageEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // Optional: List of users for bidirectional association
+    @OneToMany(mappedBy = "currentPackage")
+    private List<AppUserEntity> users;
+
+    // Optional: Bidirectional relationship with PaymentEntity
+    @OneToMany(mappedBy = "advertisementPackage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PaymentEntity> payments;
 
     @PrePersist
     protected void onCreate() {

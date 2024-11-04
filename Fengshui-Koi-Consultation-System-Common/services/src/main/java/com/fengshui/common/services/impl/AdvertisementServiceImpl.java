@@ -13,11 +13,14 @@ import com.fengshui.common.repository.postgresql.mapper.AdvertisementTypeMapper;
 import com.fengshui.common.repository.postgresql.mapper.FishPondMapper;
 import com.fengshui.common.services.AdvertisementService;
 import com.fengshui.common.shared.Constants.ImageType;
+import com.fengshui.common.shared.Model.PagingOption;
 import com.fengshui.common.shared.Request.Advertisement.*;
 import com.fengshui.common.shared.Response.Advertisement.*;
 import com.fengshui.common.shared.Response.FishPond.GetFishPondByUserResponseModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -56,10 +59,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     public ResponseEntity<CreateAdvertisementResponseModel> createAdvertisement(CreateAdvertisementRequestModel requestModel) {
         CreateAdvertisementResponseModel response;
         try {
+            // Retrieve the user from the repository
+            AppUserEntity appUser = appUserRepository
+                    .findById(requestModel.getPostedBy())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid App user ID"));
+
+            // Check if the user can post an ad
+            if (!appUser.canPostAd()) {
+                response = new CreateAdvertisementResponseModel(true, null, "You cannot post an advertisement. Please check your package status.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+
             MultipartFile[] additionalImages = requestModel.getAdditionalImages();
             List<String> uploadedImageUrls = new ArrayList<>();
 
-            if (additionalImages != null && !Arrays.stream(additionalImages).toList().isEmpty()) {
+            if (additionalImages != null && additionalImages.length > 0) {
                 for (MultipartFile image : additionalImages) {
                     String imageUrl = s3Client.uploadImage(String.valueOf(ImageType.ADVERTISEMENT), image);
                     if (imageUrl != null) {
@@ -73,25 +87,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
             KoiFishEntity koiFish = null;
             FishPondEntity fishPond = null;
 
-            if(requestModel.getKoiFishId() != null){
+            if (requestModel.getKoiFishId() != null) {
                 koiFish = koiFishRepository
                         .findById(requestModel.getKoiFishId())
                         .orElseThrow(() -> new IllegalArgumentException("Invalid Koi Fish ID"));
             }
-            if(requestModel.getFishPondId() != null){
+            if (requestModel.getFishPondId() != null) {
                 fishPond = fishPondRepository
                         .findById(requestModel.getFishPondId())
                         .orElseThrow(() -> new IllegalArgumentException("Invalid Fish pond ID"));
             }
 
-
             AdvertisementTypeEntity adsType = advertisementTypeRepository
                     .findById(requestModel.getAdvertisementType())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid Ads ID"));
-
-            AppUserEntity appUser = appUserRepository
-                    .findById(requestModel.getPostedBy())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid App user ID"));
 
             AdvertisementEntity advertisement = AdvertisementEntity.builder()
                     .title(requestModel.getTitle())
@@ -108,7 +117,12 @@ public class AdvertisementServiceImpl implements AdvertisementService {
                     .phone(requestModel.getPhone())
                     .build();
 
+            // Save the advertisement
             AdvertisementEntity newAdvertisement = advertisementRepository.save(advertisement);
+
+            // Decrement the user's remaining ads after successfully saving the advertisement
+            appUser.decrementAdCount();
+
             response = new CreateAdvertisementResponseModel(false, AdvertisementMapper.toDTO(newAdvertisement), null);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception error) {
@@ -117,8 +131,79 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         }
     }
 
+
+    public ResponseEntity<GetAdvertisementByElementOrDirectionResponseModel> getAdvertisementByElementOrDirection(GetAdvertisementByElementOrDirectionRequestModel requestModel) {
+        GetAdvertisementByElementOrDirectionResponseModel response;
+        UUID elementId = requestModel.getElementId(); // Assuming elementId and directionId are part of the request model
+        UUID directionId = requestModel.getDirectionId();
+
+        List<AdvertisementDTO> ads = advertisementRepository
+                .findByFengShuiElementOrDirection(elementId, directionId)
+                .stream()
+                .map(AdvertisementMapper::toDTO)
+                .toList();
+
+        response = new GetAdvertisementByElementOrDirectionResponseModel(false, ads, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @Override
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(GetListAdvertisementRequestModel requestModel) {
+//        GetListAdvertisementResponseModel response;
+//
+//        // Sorting setup
+//        String sortField = requestModel.getSortOption().getField();
+//        String direction = requestModel.getSortOption().getDirection();
+//
+//        // Define SQL query segments
+//        String keywordQuery = "a.title LIKE :keyword OR a.description LIKE :keyword OR a.contactInfo LIKE :keyword";
+//        String typeMatchingQuery = "";
+//
+//        // Filter by advertisement types if provided
+//        if (!requestModel.getAdsTypes().isEmpty()) {
+//            typeMatchingQuery = "AND a.advertisementType.advertisementTypeId IN :adsTypes ";
+//        }
+//
+//        // Sorting logic
+//        String sortSql = "";
+//        switch (sortField) {
+//            case "title":
+//                sortSql += "ORDER BY a.title " + direction;
+//                break;
+//            case "description":
+//                sortSql += "ORDER BY a.description " + direction;
+//                break;
+//            case "price":
+//                sortSql += "ORDER BY a.price " + direction;
+//                break;
+//        }
+//
+//        // Complete SQL query
+//        String querySql = "SELECT a FROM AdvertisementEntity a " +
+//                "LEFT JOIN a.advertisementType at " +
+//                "WHERE (" + keywordQuery + ") " +
+//                typeMatchingQuery +
+//                sortSql;
+//
+//        // Apply pagination
+//        PagingOption pagingOption = requestModel.getPagingOption();
+//        Pageable pageable = PageRequest.of(pagingOption.getPageIndex(), pagingOption.getPageTotal());
+//
+//        // Execute query and map results
+//        List<AdvertisementDTO> ads = advertisementRepository.queryAdvertisement(
+//                        querySql,
+//                        requestModel.getKeyword(),
+//                        requestModel.getAdsTypes(),
+//                        pageable
+//                )
+//                .stream()
+//                .map(AdvertisementMapper::toDTO)
+//                .toList();
+//
+//        response = new GetListAdvertisementResponseModel(false, ads, null);
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//
+
         GetListAdvertisementResponseModel response;
         List<AdvertisementDTO> advertisementList = this.advertisementRepository.findAll()
                 .stream()

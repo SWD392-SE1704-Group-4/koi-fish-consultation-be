@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public interface AdvertisementService {
     public ResponseEntity<CreateAdvertisementResponseModel> createAdvertisement(CreateAdvertisementRequestModel requestModel);
+    public ResponseEntity<GetAdvertisementByElementOrDirectionResponseModel> getAdvertisementByElementOrDirection(GetAdvertisementByElementOrDirectionRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(GetListAdvertisementRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementByStaff(GetListAdvertisementRequestModel requestModel);
     public ResponseEntity<GetListAdvertisementByCreatorResponseModel> getListAdvertisementByCreator(GetListAdvertisementByCreatorRequestModel requestModel);

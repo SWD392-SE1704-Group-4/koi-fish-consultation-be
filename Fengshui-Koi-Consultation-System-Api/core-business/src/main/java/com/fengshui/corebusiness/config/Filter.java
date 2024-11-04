@@ -47,18 +47,10 @@ public class Filter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String uri = request.getRequestURI();
 
-//        if (
-//                uri.contains("/login") ||
-//                        uri.contains("/fengshui-direction") ||
-//                        uri.contains("/fengshui-element") ||
-//                        uri.contains("/advertisement/get-list") ||
-//                        uri.contains("/fengshui") ||
-//                        uri.contains("/heavenly-earthly-elements") ||
-//                        uri.contains("/koi-fish/get-list")) {
-//
-//            filterChain.doFilter(request, response);
-//            return;
-//        }
+        if (uri.contains("/confirm-webhook")){
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);

@@ -14,4 +14,5 @@ public class CreatePaymentRequestModel {
     private BigDecimal totalAmount;
     private String note;
     private ItemData item;
+    private UUID adsPackageId;
 }

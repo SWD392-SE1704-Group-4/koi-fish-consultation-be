@@ -3,14 +3,8 @@ package com.fengshui.corebusiness.resource;
 import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
 import com.fengshui.common.services.KoiFishService;
 import com.fengshui.common.services.impl.KoiFishServiceImpl;
-import com.fengshui.common.shared.Request.KoiFish.CreateKoiFishRequestModel;
-import com.fengshui.common.shared.Request.KoiFish.DeleteKoiFishRequestModel;
-import com.fengshui.common.shared.Request.KoiFish.GetKoiFishRequestModel;
-import com.fengshui.common.shared.Request.KoiFish.UpdateKoiFishRequestModel;
-import com.fengshui.common.shared.Response.KoiFish.CreateKoiFishResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.GetKoiFishResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.UpdateKoiFishResponseModel;
+import com.fengshui.common.shared.Request.KoiFish.*;
+import com.fengshui.common.shared.Response.KoiFish.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -38,6 +32,11 @@ public class KoiFishResource {
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetKoiFishResponseModel> getKoiFish(@RequestBody GetKoiFishRequestModel requestModel) throws Exception {
         return this.koiFishService.getListKoiFish(requestModel);
+    }
+
+    @PostMapping(value = "/get-list-by-element-name", consumes = {"application/json"})
+    public ResponseEntity<GetKoiFishByElementNameResponseModel> getKoiFish(@RequestBody GetKoiFishByElementNameRequestModel requestModel) throws Exception {
+        return this.koiFishService.getListKoiFishByElementName(requestModel);
     }
 
     @PreAuthorize("hasAnyAuthority('STAFF')")

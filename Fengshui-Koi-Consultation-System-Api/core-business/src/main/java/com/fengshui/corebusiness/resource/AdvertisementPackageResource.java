@@ -1,8 +1,10 @@
 package com.fengshui.corebusiness.resource;
 
 import com.fengshui.common.services.AdvertisementPackageService;
+import com.fengshui.common.shared.Request.AdsPackage.GetPackageByUserIdRequestModel;
 import com.fengshui.common.shared.Request.Advertisement.*;
 import com.fengshui.common.shared.Request.AdvertisementPackage.*;
+import com.fengshui.common.shared.Response.AdsPackage.GetPackageByUserIdResponseModel;
 import com.fengshui.common.shared.Response.Advertisement.*;
 import com.fengshui.common.shared.Response.AdvertisementPackage.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +21,12 @@ public class AdvertisementPackageResource {
     @Autowired
     private AdvertisementPackageService advertisementPackageService;
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyAuthority('STAFF')")
     @PostMapping(path = "/create", consumes = {"application/json"})
     public ResponseEntity<CreateAdvertisementPackageResponseModel> createAdvertisementPackage(@ModelAttribute CreateAdvertisementPackageRequestModel requestModel) throws Exception {
         return this.advertisementPackageService.createAdvertisementPackage(requestModel);
     }
-    @PreAuthorize("hasAnyAuthority('USER', 'STAFF', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('USER')")
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementPackageResponseModel> getListAdvertisementPackage(@RequestBody GetListAdvertisementPackageRequestModel requestModel) throws Exception {
         return this.advertisementPackageService.getListAdvertisementPackage(requestModel);

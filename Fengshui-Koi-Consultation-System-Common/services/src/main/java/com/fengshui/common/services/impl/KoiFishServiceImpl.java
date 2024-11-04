@@ -1,20 +1,19 @@
 package com.fengshui.common.services.impl;
 
 import com.fengshui.common.aws.S3Client.S3Client;
+import com.fengshui.common.repository.postgresql.IAdvertisementRepository;
 import com.fengshui.common.repository.postgresql.IFengshuiElementRepository;
 import com.fengshui.common.repository.postgresql.IKoiFishRepository;
 import com.fengshui.common.repository.postgresql.dto.KoiFishDTO;
 import com.fengshui.common.repository.postgresql.entities.FengshuiElementEntity;
 import com.fengshui.common.repository.postgresql.entities.KoiFishEntity;
+import com.fengshui.common.repository.postgresql.enums.AdvertisementStatus;
 import com.fengshui.common.repository.postgresql.mapper.KoiFishMapper;
 import com.fengshui.common.services.KoiFishService;
 import com.fengshui.common.shared.Constants.ImageType;
 import com.fengshui.common.shared.Request.KoiFish.*;
 import com.fengshui.common.shared.Response.BaseResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.CreateKoiFishResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.DeleteKoiFishResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.GetKoiFishResponseModel;
-import com.fengshui.common.shared.Response.KoiFish.UpdateKoiFishResponseModel;
+import com.fengshui.common.shared.Response.KoiFish.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -29,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @ComponentScan(basePackages = "com.fengshui.common")
@@ -42,6 +42,9 @@ public class KoiFishServiceImpl implements KoiFishService {
 
     @Autowired
     IFengshuiElementRepository fengshuiElementRepository;
+
+    @Autowired
+    IAdvertisementRepository advertisementRepository;
 
     @Override
     @Transactional
@@ -191,17 +194,49 @@ public class KoiFishServiceImpl implements KoiFishService {
     public ResponseEntity<DeleteKoiFishResponseModel> deleteKoiFish(DeleteKoiFishRequestModel requestModel) {
         DeleteKoiFishResponseModel response;
         try {
+            // Fetch the KoiFishEntity by ID
             KoiFishEntity existingKoiFish = koiFishRepository.findById(requestModel.getKoiFishId())
                     .orElseThrow(() -> new IllegalArgumentException("Koi Fish not found"));
 
-            existingKoiFish.setDeleted(true);
+            // Check if the KoiFishEntity is referenced in any active advertisement
+            boolean isReferencedInActiveAd = advertisementRepository.existsByKoiFishAndStatus(existingKoiFish, AdvertisementStatus.APPROVED);
+            if (isReferencedInActiveAd) {
+                response = new DeleteKoiFishResponseModel(true, null, "Koi Fish cannot be deleted as it is associated with an active advertisement.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+            }
 
+            // Soft delete the KoiFishEntity by setting its 'deleted' flag to true
+            existingKoiFish.setDeleted(true);
             koiFishRepository.save(existingKoiFish);
 
             response = new DeleteKoiFishResponseModel(false, null, "Koi Fish soft deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
+
         } catch (Exception error) {
-            response = new DeleteKoiFishResponseModel(true, null, error.getMessage());
+            response = new DeleteKoiFishResponseModel(true, null, "Error: " + error.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @Override
+    public ResponseEntity<GetKoiFishByElementNameResponseModel> getListKoiFishByElementName(GetKoiFishByElementNameRequestModel requestModel) {
+        GetKoiFishByElementNameResponseModel response;
+        try {
+            // Retrieve koi fish by Feng Shui element name and not deleted
+            List<KoiFishEntity> koiFishList = koiFishRepository.findByFengshuiElement_ElementNameAndDeletedFalse(requestModel.getElementName());
+
+            // Map entities to DTOs for the response
+            List<KoiFishDTO> koiFishDTOs = koiFishList.stream()
+                    .map(KoiFishMapper::toDTO)
+                    .collect(Collectors.toList());
+
+            // Build response with mapped DTOs
+            response = new GetKoiFishByElementNameResponseModel(false, koiFishDTOs, null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        } catch (Exception e) {
+            // Return error response in case of failure
+            response = new GetKoiFishByElementNameResponseModel(true, null, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

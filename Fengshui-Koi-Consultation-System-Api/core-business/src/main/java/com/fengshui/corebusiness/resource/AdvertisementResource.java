@@ -45,11 +45,14 @@ public class AdvertisementResource {
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementByStaff(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisementByStaff(requestModel);
     }
+    @PostMapping(value = "/get-by-element-or-direction", consumes = {"application/json"})
+    public ResponseEntity<GetAdvertisementByElementOrDirectionResponseModel> getAdvertisementByElementOrDirection(@RequestBody GetAdvertisementByElementOrDirectionRequestModel requestModel) {
+        return this.advertisementService.getAdvertisementByElementOrDirection(requestModel);
+    }
     @PostMapping(value = "/get-list", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisement(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisement(requestModel);
     }
-
     @PostMapping(value = "/get-list-advertisement-type", consumes = {"application/json"})
     public ResponseEntity<GetListAdvertisementResponseModel> getListAdvertisementType(@RequestBody GetListAdvertisementRequestModel requestModel) throws Exception {
         return this.advertisementService.getListAdvertisementType(requestModel);

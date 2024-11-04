@@ -2,11 +2,13 @@ package com.fengshui.corebusiness.resource;
 
 import com.fengshui.common.services.AdvertisementService;
 import com.fengshui.common.services.AppUserService;
+import com.fengshui.common.shared.Request.AdsPackage.GetPackageByUserIdRequestModel;
 import com.fengshui.common.shared.Request.Advertisement.GetListAdvertisementRequestModel;
 import com.fengshui.common.shared.Request.AppUser.AppUserLoginResponseModel;
 import com.fengshui.common.shared.Request.AppUser.GetAppUserByIdRequestModel;
 import com.fengshui.common.shared.Request.AppUser.GetAppUserGroupRequestModel;
 import com.fengshui.common.shared.Request.AppUser.GetAppUserRoleRequestModel;
+import com.fengshui.common.shared.Response.AdsPackage.GetPackageByUserIdResponseModel;
 import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
 import com.fengshui.common.shared.Response.AppUser.AppUserLoginRequestModel;
 import com.fengshui.common.shared.Response.AppUser.GetAppUserByIdResponseModel;
@@ -37,6 +39,12 @@ public class AppUserResource {
     public ResponseEntity<GetAppUserRoleResponseModel> getAppUserRole(@RequestBody GetAppUserRoleRequestModel requestModel) throws Exception {
         return this.appUserService.getAppUserRole(requestModel);
     }
+
+    @PostMapping(value = "/get-user-package", consumes = {"application/json"})
+    public ResponseEntity<GetPackageByUserIdResponseModel> getPackageByUserId(@RequestBody GetPackageByUserIdRequestModel requestModel) throws Exception {
+        return this.appUserService.getAppUserPackage(requestModel);
+    }
+
     @PostMapping(value = "/authorize", consumes = {"application/json"})
     public ResponseEntity<GetAppUserGroupResponseModel> authorizeUser(@RequestBody GetAppUserGroupRequestModel requestModel) throws Exception {
         return this.appUserService.getAppUserGroup(requestModel);

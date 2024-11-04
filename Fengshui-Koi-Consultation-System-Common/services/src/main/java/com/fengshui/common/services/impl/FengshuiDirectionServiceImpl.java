@@ -7,7 +7,9 @@ import com.fengshui.common.repository.postgresql.dto.FengshuiElementDTO;
 import com.fengshui.common.repository.postgresql.mapper.FengshuiDirectionMapper;
 import com.fengshui.common.repository.postgresql.mapper.FengshuiElementMapper;
 import com.fengshui.common.services.FengshuiDirectionService;
+import com.fengshui.common.shared.Request.Direction.GetFengshuiDirectionByElementRequestModel;
 import com.fengshui.common.shared.Request.Direction.GetFengshuiDirectionRequestModel;
+import com.fengshui.common.shared.Response.Direction.GetFengshuiDirectionByElementResponseModel;
 import com.fengshui.common.shared.Response.Direction.GetFengshuiDirectionResponseModel;
 import com.fengshui.common.shared.Response.Element.GetFengshuiElementResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,16 @@ public class FengshuiDirectionServiceImpl implements FengshuiDirectionService {
         GetFengshuiDirectionResponseModel response;
         List<FengshuiDirectionDTO> elementList = this.fengshuiDirectionRepository.findAll().stream().map(FengshuiDirectionMapper::toDTO).toList();
         response = new GetFengshuiDirectionResponseModel(false, elementList, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @Override
+    public ResponseEntity<GetFengshuiDirectionByElementResponseModel> getListFengshuiDirectionByElement(GetFengshuiDirectionByElementRequestModel requestModel) {
+        GetFengshuiDirectionByElementResponseModel response;
+        List<FengshuiDirectionDTO> directions = fengshuiDirectionRepository.findByElementAssociation(requestModel.getElementName())
+                .stream()
+                .map(FengshuiDirectionMapper::toDTO)
+                .toList();
+        response = new GetFengshuiDirectionByElementResponseModel(false, directions, null);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

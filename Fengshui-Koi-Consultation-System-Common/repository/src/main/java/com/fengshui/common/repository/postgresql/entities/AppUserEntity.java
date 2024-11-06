@@ -104,11 +104,16 @@ public class AppUserEntity {
     }
     public void upgradePackage(AdvertisementPackageEntity newPackage) {
         this.currentPackage = newPackage;
+
+        if (this.remainingAds == null) {
+            this.remainingAds = 0;
+        }
+
         this.remainingAds += newPackage.getMaxAds();
+
         this.packageExpiryDate = LocalDate.now().plusDays(newPackage.getDurationInDays());
     }
 
-    // Method to decrement remaining ad slots
     public boolean canPostAd() {
         return this.remainingAds > 0 && (packageExpiryDate == null || LocalDate.now().isBefore(packageExpiryDate));
     }

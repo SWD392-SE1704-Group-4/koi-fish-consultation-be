@@ -2,17 +2,12 @@ package com.fengshui.common.services;
 
 import com.fengshui.common.shared.Request.AdsPackage.GetPackageByUserIdRequestModel;
 import com.fengshui.common.shared.Request.Advertisement.GetListAdvertisementRequestModel;
-import com.fengshui.common.shared.Request.AppUser.AppUserLoginResponseModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserByIdRequestModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserGroupRequestModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserRoleRequestModel;
+import com.fengshui.common.shared.Request.AppUser.*;
 import com.fengshui.common.shared.Response.AdsPackage.GetPackageByUserIdResponseModel;
 import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
-import com.fengshui.common.shared.Response.AppUser.AppUserLoginRequestModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserByIdResponseModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserGroupResponseModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserRoleResponseModel;
+import com.fengshui.common.shared.Response.AppUser.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface AppUserService {
     public ResponseEntity<GetAppUserGroupResponseModel> getAppUserGroup(GetAppUserGroupRequestModel requestModel);
@@ -22,4 +17,5 @@ public interface AppUserService {
     public ResponseEntity<Object> changePassword(Object requestModel);
     public ResponseEntity<Object> verifyEmail(Object requestModel);
     public ResponseEntity<AppUserLoginResponseModel> loginAppUser(AppUserLoginRequestModel requestModel);
+    public ResponseEntity<GetAppUserResponseModel> getAppUser(GetAppUserRequestModel requestModel);
 }

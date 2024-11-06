@@ -11,15 +11,9 @@ import com.fengshui.common.repository.postgresql.mapper.AdvertisementPackageMapp
 import com.fengshui.common.repository.postgresql.mapper.AppUserMapper;
 import com.fengshui.common.services.AppUserService;
 import com.fengshui.common.shared.Request.AdsPackage.GetPackageByUserIdRequestModel;
-import com.fengshui.common.shared.Request.AppUser.AppUserLoginResponseModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserByIdRequestModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserGroupRequestModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserRoleRequestModel;
+import com.fengshui.common.shared.Request.AppUser.*;
 import com.fengshui.common.shared.Response.AdsPackage.GetPackageByUserIdResponseModel;
-import com.fengshui.common.shared.Response.AppUser.AppUserLoginRequestModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserByIdResponseModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserGroupResponseModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserRoleResponseModel;
+import com.fengshui.common.shared.Response.AppUser.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +22,7 @@ import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminInitia
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
@@ -137,6 +132,16 @@ public class AppUserServiceImpl implements AppUserService {
             response = new AppUserLoginResponseModel(true, null, "Invalid email or password.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
+    }
+
+    public ResponseEntity<GetAppUserResponseModel> getAppUser(GetAppUserRequestModel requestModel) {
+        List<AppUserDTO> users = appUserRepository.findAll()
+                .stream()
+                .map(AppUserMapper::toDTO) // Map each AppUserEntity to AppUserDTO
+                .collect(Collectors.toList());
+
+        GetAppUserResponseModel response = new GetAppUserResponseModel(false, users, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

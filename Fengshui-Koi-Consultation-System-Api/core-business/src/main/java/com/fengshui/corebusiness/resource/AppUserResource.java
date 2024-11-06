@@ -4,16 +4,10 @@ import com.fengshui.common.services.AdvertisementService;
 import com.fengshui.common.services.AppUserService;
 import com.fengshui.common.shared.Request.AdsPackage.GetPackageByUserIdRequestModel;
 import com.fengshui.common.shared.Request.Advertisement.GetListAdvertisementRequestModel;
-import com.fengshui.common.shared.Request.AppUser.AppUserLoginResponseModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserByIdRequestModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserGroupRequestModel;
-import com.fengshui.common.shared.Request.AppUser.GetAppUserRoleRequestModel;
+import com.fengshui.common.shared.Request.AppUser.*;
 import com.fengshui.common.shared.Response.AdsPackage.GetPackageByUserIdResponseModel;
 import com.fengshui.common.shared.Response.Advertisement.GetListAdvertisementResponseModel;
-import com.fengshui.common.shared.Response.AppUser.AppUserLoginRequestModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserByIdResponseModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserGroupResponseModel;
-import com.fengshui.common.shared.Response.AppUser.GetAppUserRoleResponseModel;
+import com.fengshui.common.shared.Response.AppUser.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +48,10 @@ public class AppUserResource {
     public ResponseEntity<GetAppUserByIdResponseModel> authorizeUser(@RequestBody GetAppUserByIdRequestModel requestModel) throws Exception {
         return this.appUserService.getAppUserById(requestModel);
     }
-
+    @PostMapping(value = "/get-list", consumes = {"application/json"})
+    public ResponseEntity<GetAppUserResponseModel> getUser(@RequestBody GetAppUserRequestModel requestModel) throws Exception {
+        return this.appUserService.getAppUser(requestModel);
+    }
     @PostMapping(value = "/login", consumes = {"application/json"})
     public ResponseEntity<AppUserLoginResponseModel> login(@RequestBody AppUserLoginRequestModel requestModel) throws Exception {
         return this.appUserService.loginAppUser(requestModel);

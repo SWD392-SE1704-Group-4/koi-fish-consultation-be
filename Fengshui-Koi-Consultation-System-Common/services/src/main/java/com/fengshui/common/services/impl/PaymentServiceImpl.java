@@ -15,8 +15,10 @@ import com.fengshui.common.repository.postgresql.mapper.PaymentMapper;
 import com.fengshui.common.services.PaymentService;
 import com.fengshui.common.shared.Request.Payment.CreatePaymentRequestModel;
 import com.fengshui.common.shared.Request.Payment.GetPaymentByIdRequestModel;
+import com.fengshui.common.shared.Request.Payment.GetPaymentRequestModel;
 import com.fengshui.common.shared.Response.Payment.CreatePaymentResponseModel;
 import com.fengshui.common.shared.Response.Payment.GetPaymentByIdResponseModel;
+import com.fengshui.common.shared.Response.Payment.GetPaymentResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,14 +33,16 @@ import vn.payos.type.WebhookData;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-    @Value("http://" + "${public.api.url}" + ":3000/information/ads-package")
+    @Value("https://" + "${public.api.url}" + "/information/ads-package")
     private String returnUrl;
-    @Value("http://" + "${public.api.url}" + ":3000/information/ads-package")
+    @Value("https://" + "${public.api.url}" + "/information/ads-package")
     private String cancelUrl;
 
     @Autowired
@@ -160,6 +164,16 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentDTO paymentDTO = PaymentMapper.toDTO(payment);
 
         response = new GetPaymentByIdResponseModel(false, paymentDTO, null);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    public ResponseEntity<GetPaymentResponseModel> getPayment(GetPaymentRequestModel requestModel) {
+        List<PaymentDTO> paymentDTOs = paymentRepository.findAll()
+                .stream()
+                .map(PaymentMapper::toDTO)
+                .collect(Collectors.toList());
+
+        GetPaymentResponseModel response = new GetPaymentResponseModel(false, paymentDTOs, null);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

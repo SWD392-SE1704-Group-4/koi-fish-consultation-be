@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fengshui.common.services.PaymentService;
 import com.fengshui.common.services.TransactionService;
 import com.fengshui.common.shared.Request.Payment.CreatePaymentRequestModel;
+import com.fengshui.common.shared.Request.Payment.GetPaymentRequestModel;
 import com.fengshui.common.shared.Request.Transaction.CreateTransactionRequestModel;
 import com.fengshui.common.shared.Response.Payment.CreatePaymentResponseModel;
+import com.fengshui.common.shared.Response.Payment.GetPaymentResponseModel;
 import com.fengshui.common.shared.Response.Transaction.CreateTransactionResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -47,5 +49,10 @@ public class PayOsPaymentResource {
             response.set("data", null);
             return response;
         }
+    }
+
+    @PostMapping(path = "/get-list", consumes = {"application/json"})
+    public ResponseEntity<GetPaymentResponseModel> getTransaction(@RequestBody GetPaymentRequestModel requestModel) throws Exception {
+        return this.paymentService.getPayment(requestModel);
     }
 }

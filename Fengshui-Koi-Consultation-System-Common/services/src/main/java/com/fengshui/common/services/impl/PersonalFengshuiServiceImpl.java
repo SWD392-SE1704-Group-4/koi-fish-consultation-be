@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PersonalFengshuiServiceImpl implements PersonalFengshuiService {
     @Autowired
@@ -64,32 +66,32 @@ public class PersonalFengshuiServiceImpl implements PersonalFengshuiService {
     @Override
     public ResponseEntity<GetPersonalFengshuiResponseModel> getPersonalFengshui(GetPersonalFengshuiRequestModel requestModel) {
         GetPersonalFengshuiResponseModel response;
-        try {
-            // Retrieve the AppUserEntity by appUserId from the request model
-            AppUserEntity appUser = appUserRepository.findById(requestModel.getAppUserId())
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid App User ID"));
 
-            // Retrieve the PersonalFengshuiEntity for the user
-            PersonalFengshuiEntity personalFengshui = personalFengshuiRepository.findByAppUser(appUser)
-                    .orElseThrow(() -> new IllegalArgumentException("Personal Feng Shui not found for the given user."));
-
-            // Convert the found entity to DTO for the response model
-            response = new GetPersonalFengshuiResponseModel(
-                    false,
-                    PersonalFengshuiMapper.toDTO(personalFengshui),
-                    null
-            );
-
+        // Retrieve the AppUserEntity by appUserId from the request model
+        Optional<AppUserEntity> optionalAppUser = appUserRepository.findById(requestModel.getAppUserId());
+        if (optionalAppUser.isEmpty()) {
+            response = new GetPersonalFengshuiResponseModel(true, null, "Invalid App User ID");
             return ResponseEntity.status(HttpStatus.OK).body(response);
-
-        } catch (IllegalArgumentException e) {
-            // Return NOT FOUND if personal Feng Shui info does not exist for the user
-            response = new GetPersonalFengshuiResponseModel(true, null, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        } catch (Exception e) {
-            // Handle other unexpected errors
-            response = new GetPersonalFengshuiResponseModel(true, null, e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+
+        AppUserEntity appUser = optionalAppUser.get();
+
+        // Retrieve the PersonalFengshuiEntity for the user
+        Optional<PersonalFengshuiEntity> optionalPersonalFengshui = personalFengshuiRepository.findByAppUser(appUser);
+        if (optionalPersonalFengshui.isEmpty()) {
+            response = new GetPersonalFengshuiResponseModel(true, null, "Personal Feng Shui not found for the given user.");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+
+        // Convert the found entity to DTO for the response model
+        PersonalFengshuiEntity personalFengshui = optionalPersonalFengshui.get();
+        response = new GetPersonalFengshuiResponseModel(
+                false,
+                PersonalFengshuiMapper.toDTO(personalFengshui),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 }
